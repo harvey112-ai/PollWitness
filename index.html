@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>民調看板 風格提案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 冷靜、明亮、可信的資料服務；像一份精心排版的數據簡報，不是政論節目
+   IDEA: 晨光下的資料儀表：淡黃到淡藍的漸層色塊當底，細網格像量測紙，數字像儀器讀數
+   PICTURE: 每頁首屏是漸層色帶上的結論標題，下方就是主圖；資料條用同色系漸層
+   COLOUR and TYPE: 底 #fcfcfc、墨 #1d2127、招牌黃 #fdda5a、晨藍 #e4f9ff 到 #e8edff；Outfit 數字 + Noto Sans TC
+   LAYOUT: 全寬漸層 hero 帶 → 白色玻璃卡片；窄螢幕單欄 */
+:root{color-scheme:light;
+--bg:#fcfcfc;--ink:#1d2127;--ink2:#4c5561;--ink3:#7d8794;--line:#e6e9ee;--panel:#f4f6f9;--card:#ffffffd9;
+--hi:#fdda5a;--hi-ink:#1d2127;--hi2:#f5ad0b;
+--g-hero:linear-gradient(115deg,#fff4cf 0%,#fffbeb 28%,#eefbff 62%,#e6ecff 100%);
+--g-brand:linear-gradient(120deg,#fdda5a 0%,#9fe3d6 55%,#7fb5ff 100%);
+--g-cool:linear-gradient(120deg,#e4f9ff,#eef0ff);
+--dpp:#1f7a3a;--kmt:#2e64b7;--tpp:#3aacc9;--pfp:#e88825;--npp:#f0d046;--ind:#6b7480;--oth:#a3aab4;
+--dpp-t:#1f7a3a;--kmt-t:#2e64b7;--tpp-t:#1d7f97;--pfp-t:#b5600f;--npp-t:#8a6d00;--ind-t:#5d6570;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#c98500;
+--pos:#8a5cd6;--pos2:#b49cf0;--neg:#e65a52;--neg2:#f39a85;--mid:#d6dae0;
+--warn-bg:#fff6d3;--shadow:0 1px 2px #1d212708,0 8px 24px -12px #2a3a6026}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Outfit","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;overflow-x:clip}
+.num{font-family:"Outfit","Noto Sans TC",sans-serif;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration-color:#fdda5a;text-decoration-thickness:2px;text-underline-offset:4px}
+a:hover{text-decoration-color:var(--hi2)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 max(4vw,16px)}
+/* header */
+header{position:sticky;top:0;z-index:5;transition:transform .22s ease;background:#ffffffcc;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:6px 28px;padding-top:6px}
+.top nav{margin:0 0 0 auto}
+header.hid{transform:translateY(-100%)}
+@media(max-width:1100px){.brand small{display:none}}
+@media(max-width:860px){.top{flex-wrap:wrap;padding-top:8px}.top nav{margin:0;width:100%}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.04em}
+.brand svg{flex:none}
+.brand small{font-weight:400;font-size:13px;color:var(--ink3);letter-spacing:0}
+nav{display:flex;gap:2px;overflow-x:auto;margin-top:2px}
+nav a{flex:none;position:relative;text-decoration:none;padding:12px 12px 12px;min-height:44px;font-weight:500;color:var(--ink2);border-radius:10px 10px 0 0}
+nav a:hover{color:var(--ink);background:#f6f7f9}
+nav a[aria-current=page]{color:var(--ink);font-weight:700}
+nav a[aria-current=page]::after{content:"";position:absolute;left:50%;bottom:0;width:28px;height:4px;border-radius:4px;transform:translateX(-50%);background:var(--hi)}
+nav a:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #7fb5ff;outline-offset:2px;border-radius:8px}
+.notice{font-size:14px;padding:7px 0;background:linear-gradient(90deg,#fff3c4,#fffbeb 60%,#eefbff)}
+.notice b{font-weight:700}
+.notice b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--hi2);margin-right:8px;vertical-align:1px;box-shadow:0 0 0 4px #f5ad0b33}
+/* hero band */
+section[data-view]{display:none;padding:0 0 64px}section[data-view].on{display:block}
+.hero{position:relative;margin:0 calc(50% - 50vw) 28px;padding:52px calc(50vw - 50%) 40px;background:var(--g-hero);overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#1d21270a 1px,transparent 1px),linear-gradient(90deg,#1d21270a 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(180deg,#000 30%,transparent)}
+.hero::after{content:"";position:absolute;z-index:-1;right:-8vw;top:-140px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,#9fe3d655,#7fb5ff22 45%,transparent 70%)}
+h1{font-size:clamp(28px,4vw,44px);line-height:1.18;margin:0 0 14px;font-weight:700;letter-spacing:.01em;text-wrap:balance}
+h2{font-size:21px;margin:44px 0 16px;font-weight:700}
+h2::after{content:"";display:block;width:32px;height:4px;border-radius:4px;background:var(--hi);margin-top:10px}
+.lede{color:var(--ink2);max-width:66ch;margin:0;font-size:16.5px}
+.mark{background:linear-gradient(transparent 58%,var(--hi) 0);padding:0 .12em}
+.hero.split{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:end}
+@media(max-width:860px){.hero.split{grid-template-columns:minmax(0,1fr)}}
+.readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.readout div{background:#ffffffb3;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid #ffffff;border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+.readout b{display:block;font-family:"Outfit",sans-serif;font-size:30px;font-weight:600;line-height:1.1}
+.readout span{font-size:12.5px;color:var(--ink2)}
+/* controls */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+button{font:inherit;cursor:pointer}
+.chip{border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;padding:8px 18px;min-height:44px;font-weight:500;transition:background .15s,border-color .15s}
+.chip:hover{border-color:#cfd5de;color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--hi);border-color:var(--hi);color:var(--hi-ink);font-weight:700;box-shadow:0 6px 16px -8px #f5ad0b99}
+.ld{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0}
+.lg2{color:var(--ink3);font-size:13px}
+#trend .pt,#etl .pt{transition:opacity .12s}
+/* layout + cards */
+.grid2{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.grid2>div:first-child,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow)}
+.fig{position:relative;min-height:360px}.fig>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--ink2);margin:0 0 12px}
+.sw{display:inline-block;width:18px;height:0;border-top:3px solid;border-radius:3px;vertical-align:middle;margin-right:6px}
+.sw.d{border-top-style:dashed;border-top-width:2px;width:22px}
+#latest{display:grid;gap:14px}
+.card{background:linear-gradient(170deg,#eef8ff 0%,#fbfcff 45%,#fff 100%);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.card{isolation:isolate}
+.card h3{margin:0 0 6px;font-size:16px}
+.meta{font-size:13px;color:var(--ink3)}
+.kv{display:flex;gap:22px;flex-wrap:wrap;margin:8px 0}
+.kv div{display:flex;flex-direction:column}
+.kv .big{font-family:"Outfit",sans-serif;font-size:38px;font-weight:600;line-height:1.05;letter-spacing:-.01em}
+.kv span:last-child{font-size:13px;color:var(--ink3)}
+.badge{display:inline-block;font-size:12px;background:#f2f4f7;border-radius:999px;padding:2px 9px;margin:0 4px 4px 0;white-space:nowrap;color:var(--ink2)}
+.badge.alert{background:#fdecea;color:#b4322a}
+.prow .badge{white-space:normal;max-width:100%}
+.badge.warn{background:#fff4d6;color:#8a5a00;white-space:normal}
+.badge.ok{background:#e3f6ec;color:#0f7a42}
+.badge.ok::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#18a35a;margin-right:5px;vertical-align:1px}
+/* election */
+.lock{position:relative;margin-top:36px;max-width:760px;padding:30px 32px;border-radius:22px;background:#fff;box-shadow:var(--shadow);isolation:isolate}
+.lock::before{content:"";position:absolute;inset:-1.5px;z-index:-2;border-radius:23px;background:var(--g-brand)}
+.lock::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:21px;background:linear-gradient(160deg,#fffdf4,#fff 40%,#f5fbff)}
+.lock h1{font-size:clamp(24px,3.2vw,34px)}
+.cd{font-family:"Outfit",sans-serif;font-size:clamp(34px,6vw,56px);font-weight:600;line-height:1.1;background:var(--g-brand);-webkit-background-clip:text;background-clip:text;color:transparent;filter:saturate(1.3) brightness(.85)}
+.btn{border:0;background:var(--hi);color:var(--hi-ink);border-radius:12px;padding:12px 22px;min-height:44px;font-weight:700;margin-top:14px;box-shadow:0 8px 20px -10px #f5ad0bcc}
+.btn:hover{background:#ffd23a}
+.water{background:repeating-linear-gradient(135deg,#fff6d3 0 14px,#fffbeb 14px 28px);border:1px solid #f6e3a0;border-radius:12px;padding:8px 14px;font-size:14px;margin-bottom:18px}
+.sum{display:flex;flex-wrap:wrap;gap:12px 14px;margin:4px 0 18px;font-size:15px}
+.sum>div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 14px}
+.sum b{font-family:"Outfit",sans-serif;font-size:22px}
+.rows{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:4px 22px;box-shadow:var(--shadow)}
+.prow{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:16px;padding:16px 0;border-bottom:1px solid var(--line);align-items:center}
+.prow:last-child{border-bottom:0}
+@media(max-width:640px){.prow{grid-template-columns:minmax(0,1fr)}.rows{padding:4px 16px}}
+.who{font-weight:700}
+.track{position:relative;height:74px}
+.track .ax{position:absolute;left:0;right:0;top:26px;height:6px;border-radius:6px;background:#eef0f3}
+.track .tk{position:absolute;top:56px;font-size:12px;color:var(--ink3);transform:translateX(-50%)}
+.dot{position:absolute;top:21px;width:16px;height:16px;border-radius:50%;transform:translateX(-50%);box-shadow:0 0 0 2px #fff}
+.dot.npp{box-shadow:0 0 0 1.5px #8a6d00,0 0 0 3.5px #fff}
+.dl{position:absolute;font-size:13px;font-weight:700;transform:translateX(-50%);white-space:nowrap;font-family:"Outfit",sans-serif}
+.dl.up{top:-2px}.dl.dn{top:38px}
+.cands{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-bottom:10px}
+.cands i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.house{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.house>div{background:linear-gradient(160deg,#fff,#f3f8ff);border:1px solid var(--line);border-radius:14px;padding:10px 16px;font-size:14px}
+/* bars: gradient segments */
+.vs{min-width:0}
+.vh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px;font-weight:600;margin-bottom:6px}
+.vh b{font-size:22px;font-family:"Outfit",sans-serif}
+.vh .vg{font-size:12px;color:var(--ink3);font-weight:500;text-align:center;line-height:1.4}
+.vh>span:first-child,.vh>span:last-child{white-space:nowrap}
+@media(max-width:640px){.vh b{font-size:19px}.vh{font-size:13px}}
+.vb{position:relative;display:flex;gap:2px;height:30px}
+.vb span{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink2);min-width:0;overflow:hidden;white-space:nowrap;font-family:"Outfit",sans-serif}
+.vb .a{border-radius:8px 3px 3px 8px}.vb .b{border-radius:3px 8px 8px 3px}
+.vb .r{background:#e6e9ee;border-radius:3px}
+.vb .mid{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ink);opacity:.55;pointer-events:none}
+.vf{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3);margin-top:4px;font-family:"Outfit",sans-serif}
+.em{display:flex;flex-direction:column;gap:3px;padding:2px 0}.em+.em{border-top:1px dashed var(--line);padding-top:5px;margin-top:3px}
+.em .md{font-size:12px;color:var(--ink3)}
+.emweb .mb{opacity:.55}
+.empc .mb{outline:1.5px dashed #b4322a;outline-offset:1px}
+#pmon{scroll-margin-top:calc(var(--navh,96px) + 16px)}#emon{scroll-margin-top:calc(var(--navh,96px) + 120px)}
+.chip .cn{display:inline-block;margin-left:6px;font-size:12px;color:var(--ink3);font-family:"Outfit",sans-serif}
+.estick{position:sticky;top:var(--stick,var(--navh,96px));transition:top .22s ease;z-index:4;background:#fcfcfcf0;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin:0 calc(50% - 50vw);padding:6px calc(50vw - 50%) 0;border-bottom:1px solid var(--line)}
+.estick .chips{margin-bottom:6px;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.estick .chips::-webkit-scrollbar{display:none}.estick .chip{min-height:36px;padding:4px 16px;flex:none}.estick .cands{display:none}
+@media(max-width:640px){.estick .chip{min-height:40px}}
+@media(max-width:640px){.estick{padding-top:6px}.estick .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:6px}.estick .chips::-webkit-scrollbar{display:none}.estick .chip{flex:none}.estick .cands{display:none}}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:860px){.kpis{grid-template-columns:1fr}}
+.kv3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}.kv3>div{display:flex;flex-direction:column}.kv3 span:last-child{font-size:13px;color:var(--ink3)}
+.kv3 .big{font-size:28px}
+.ovw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:6px 10px}
+.ov{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+.ov th,.ov td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+.ov tr:last-child th,.ov tr:last-child td{border-bottom:0}
+.ov thead th{color:var(--ink3);font-weight:600}
+.ov tbody th{text-align:left;min-width:9em}.ov tbody th b{display:block;font-size:14px}.ov tbody th span{font-size:12px;color:var(--ink3);font-weight:400}
+.ov .pe{color:var(--ink3)}
+.pc{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:stretch;width:100%;padding:4px;border-radius:8px}
+.pc:hover,.pc:focus-visible{background:#fff7d6}
+.mb{display:flex;gap:1px;height:8px;border-radius:4px;overflow:hidden}.mb i{display:block}
+.mv{font-size:12px;white-space:nowrap}.mv b{font-weight:700}
+.mq{font-size:12px;color:#8a5a00;background:#fff4d6;border-radius:999px;padding:0 6px;align-self:center}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:4px 0 22px}
+.cmp>div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 20px;box-shadow:var(--shadow)}
+.cmp h3{margin:0 0 6px;font-size:16px}.cmp p{margin:0;font-size:14.5px;color:var(--ink2)}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.pbar{display:flex;gap:2px;height:30px}
+.pbar span{display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#fff;min-width:0;overflow:hidden;white-space:nowrap;font-family:"Outfit",sans-serif}
+.pbar span:first-child{border-radius:8px 3px 3px 8px}.pbar span:last-child{border-radius:3px 8px 8px 3px}
+.pbar .lt{color:var(--ink)}
+.plg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink2);margin-top:8px}
+.plg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.plg b{font-family:"Outfit",sans-serif;color:var(--ink)}
+.bar{display:flex;height:32px;gap:2px;margin:6px 0}
+.bar span{display:flex;align-items:center;font-size:13px;font-weight:600;padding:0 8px;white-space:nowrap;overflow:hidden;font-family:"Outfit",sans-serif}
+.bar .p{background:var(--pos);color:#fff;border-radius:10px 3px 3px 10px}
+.bar .m.dk{background:repeating-linear-gradient(135deg,var(--mid) 0 5px,#eef0f3 5px 9px)}
+.bar .m{background:var(--mid);color:var(--ink2);justify-content:center;border-radius:3px}
+.bar .n{background:var(--neg);color:#fff;justify-content:flex-end;border-radius:3px 10px 10px 3px}
+.irow{display:grid;grid-template-columns:minmax(0,9em) minmax(0,1fr) 5.5em;gap:12px;align-items:center;padding:6px 0}
+.irow .chg{font-size:13px;color:var(--ink3);text-align:right}
+@media(max-width:600px){.irow{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}.irow>.bar{grid-column:1/-1;grid-row:2}.irow>div:first-child{font-weight:600}}
+#premier,#pfav{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 22px;box-shadow:var(--shadow)}
+#pairs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px}
+#pairs>.meta{grid-column:1/-1}
+.pair{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 22px;box-shadow:var(--shadow)}
+.pair h3{margin:0 0 8px;font-size:17px}
+.pair .irow{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}.pair .irow>.bar{grid-column:1/-1;grid-row:2}.pair .irow>div:first-child{font-size:14px;color:var(--ink2)}
+.q{font-size:14px;color:var(--ink2);margin:8px 0 2px}
+.delta{display:inline-block;font-size:14px;margin-top:10px;background:linear-gradient(90deg,#fff3c4,#fffbeb);border-radius:999px;padding:4px 12px}
+.delta b{font-family:"Outfit",sans-serif;font-size:18px}
+details{margin-top:8px;font-size:14px;color:var(--ink2)}
+summary{cursor:pointer;min-height:32px;color:var(--ink)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--ink2);background:#f6f8fb}
+.scroll{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media(max-width:760px){.steps{grid-template-columns:minmax(0,1fr)}}
+.steps div{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);overflow:hidden;isolation:isolate}
+.steps div::before{content:"";position:absolute;inset:0 0 auto;height:6px;background:var(--g-brand);z-index:-1}
+.steps b{display:block;margin-bottom:6px;font-size:17px}
+.swgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:12px;margin-top:16px}
+.swc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
+.swc i{flex:none;width:40px;height:40px;border-radius:12px;box-shadow:inset 0 0 0 1px #1d21271a}
+.swc b{display:block;font-size:15px}.swc span{font-size:12.5px;color:var(--ink3);font-family:"Outfit",sans-serif}
+.swh{grid-column:1/-1;font-weight:700;font-size:14px;color:var(--ink2);margin-top:6px}
+.dis{display:grid;gap:14px;counter-reset:d}
+.dis>div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 22px;box-shadow:var(--shadow)}
+.dis h3{margin:0 0 8px;font-size:17px}
+.dis ul{margin:0;padding-left:1.2em}.dis li{margin:4px 0}
+.dis .todo{background:#fff3c4;padding:0 6px;border-radius:6px;font-size:14px}
+.dis table{margin-top:6px}
+/* sources */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px}
+.src{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;isolation:isolate}
+.src::before{content:"";position:absolute;right:-60px;top:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,#fdda5a40,transparent 70%);z-index:-1}
+.src h3{margin:0 0 6px;font-size:17px}
+.src dl{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:4px 10px;margin:10px 0 0;font-size:14px}
+.src dt{color:var(--ink3)}.src dd{margin:0}
+.src .new{font-size:12px;background:var(--hi);color:var(--hi-ink);padding:1px 8px;border-radius:999px;margin-left:8px;vertical-align:2px;font-weight:600}
+.grp{display:inline-block;font-size:15px;font-weight:700;margin:30px 0 12px;padding:6px 16px;border-radius:999px;background:var(--g-cool);border:1px solid #dfe8f5}
+.tip{position:fixed;pointer-events:none;background:#1d2127ee;color:#fff;font-size:13px;padding:8px 12px;border-radius:10px;opacity:0;transition:opacity .1s;z-index:9;max-width:260px;line-height:1.5;box-shadow:0 10px 30px -10px #0006}
+footer{padding:28px 0 48px;font-size:13px;color:var(--ink3);background:linear-gradient(180deg,var(--bg),#eef4ff)}
+/* small multiples */
+.trendbox{position:relative}
+.sm3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 22px}
+.sm3.sm4{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px}
+@media(max-width:900px){.sm3,.sm3.sm4{grid-template-columns:minmax(0,1fr)}}
+.smh{display:flex;align-items:baseline;gap:8px;margin:2px 0 0 30px}.smh b{font-size:15px}.smh span{font-size:12px;color:var(--ink3)}
+.fig.sm{min-height:250px}.fig.one{min-height:360px}
+svg .ov{cursor:crosshair}
+/* bands + eyebrow */
+.band{margin:0 calc(50% - 50vw);padding:34px calc(50vw - 50%) 44px;background:#fff}
+.band.alt{background:#f3f5f9;border-top:1px solid #eaeef4;border-bottom:1px solid #eaeef4}
+.band>h2:first-child,.band>.chips:first-child{margin-top:0}
+.band>.chips:first-child+h2{margin-top:22px}
+.hero:has(+.band){margin-bottom:0}
+.estick+.band{margin-top:0}
+section[data-view]:has(>.band:last-child){padding-bottom:0}
+#ebody>.band:last-child{margin-bottom:0}
+.eyebrow2{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:13px;font-weight:600;letter-spacing:.16em;color:var(--ink2)}
+.eyebrow2::before{content:"";width:22px;height:3px;border-radius:3px;background:var(--hi2)}
+/* draw-in */
+.js-anim .band :is(.fig>svg){clip-path:inset(0 100% 0 0);transition:clip-path 1s cubic-bezier(.3,.7,.2,1)}
+.js-anim .band :is(.mbar,.vb,.bar,.pbar){clip-path:inset(0 100% 0 0);transition:clip-path .75s cubic-bezier(.3,.7,.2,1) .12s}
+.js-anim .band.in :is(.fig>svg,.mbar,.vb,.bar,.pbar){clip-path:inset(0 0 0 0)}
+/* home */
+a.brand{text-decoration:none;color:inherit}
+.eyebrow{display:inline-block;font-size:14px;font-weight:600;color:var(--ink2);background:#ffffffb3;border:1px solid #fff;border-radius:999px;padding:4px 14px;margin:0 0 16px;box-shadow:var(--shadow)}
+.hhero{align-items:center;padding-top:44px;padding-bottom:36px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}@media(max-width:860px){.hhero{grid-template-columns:minmax(0,1fr)}}
+.hhero h1{font-size:clamp(30px,4.4vw,50px)}
+.hill{width:100%;max-width:540px;height:auto;justify-self:center;overflow:visible}
+.hcta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.hcta .btn{margin:0;text-decoration:none;display:inline-flex;align-items:center}
+.btn.ghost{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.btn.ghost:hover{background:#fff7d6}
+@media(max-width:860px){.hill{max-width:440px;margin-top:6px}}
+.hstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:-8px 0 8px}
+.hstats>div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow)}
+.hstats b{display:block;font-size:30px;font-weight:600;line-height:1.1}.hstats span{font-size:13px;color:var(--ink2)}
+@media(max-width:760px){.hstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tenets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:860px){.tenets{grid-template-columns:minmax(0,1fr)}.tenets>div{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:14px;align-items:start}.tenets .ti{grid-row:span 2}.tenets h3{margin:2px 0 4px}}
+.tenets>div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow)}
+.tenets h3{margin:14px 0 6px;font-size:17px}.tenets p{margin:0;font-size:15px;color:var(--ink2)}
+.ti{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:var(--g-cool);border:1px solid #dfe8f5}
+.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:860px){.doors{grid-template-columns:minmax(0,1fr)}}
+.door{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;background:linear-gradient(170deg,#fffdf2 0%,#fff 40%,#f5f9ff 100%);border:1px solid var(--line);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s}
+.door:hover{transform:translateY(-2px);box-shadow:0 1px 2px #1d212708,0 16px 32px -14px #2a3a6040}
+.door .dk{font-size:13px;font-weight:600;color:var(--ink3)}
+.door h3{margin:0;font-size:18px;line-height:1.4}
+.dr{display:grid;grid-template-columns:6.8em minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px}
+.dr .mb{height:10px}.dr .dn{color:var(--ink2)}.dr .dv{font-size:13px;white-space:nowrap}
+.door .go{margin-top:auto;font-weight:700;font-size:15px;padding-top:4px}
+.door .go::after{content:"";display:block;width:28px;height:4px;border-radius:4px;background:var(--hi);margin-top:6px;transition:width .15s}
+.door:hover .go::after{width:48px}
+.dlock{margin:0;padding:10px 14px;border-radius:12px;background:repeating-linear-gradient(135deg,#fff6d3 0 12px,#fffbeb 12px 24px);border:1px solid #f6e3a0;font-size:14px}
+.rchips{display:flex;flex-wrap:wrap;gap:6px}.rchips span{font-size:13px;background:#f2f4f7;border-radius:999px;padding:3px 10px}
+/* view toggle + data tables */
+.phead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-bottom:8px}.phead .legend{margin:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:#fff;flex:none}
+.seg button{border:0;background:none;border-radius:999px;padding:0 16px;min-height:44px;font-size:14px;color:var(--ink2);font-weight:500}
+.seg button[aria-pressed=true]{background:var(--hi);color:var(--hi-ink);font-weight:700}
+.seg button:hover{color:var(--ink)}
+.tview{display:none;overflow-x:auto;margin:4px 0 8px}
+.as-table .tview{display:block}.as-table .fig,.as-table .legend,.as-table .fig~p.meta{display:none}
+.dt{min-width:640px;font-size:14px}.dt th{white-space:nowrap}.dt td{white-space:nowrap}.dt td.w{white-space:normal;min-width:10em}
+.dt td.n,.dt th.n{text-align:right;font-family:"Outfit","Noto Sans TC",sans-serif;font-variant-numeric:tabular-nums}
+.dt .badge{margin:0 4px 0 0}
+@media(max-width:600px){.dt.pi{min-width:0}.dt.pi td{white-space:normal}.dt.pi tr{background:#fff}}
+/* election poll table */
+#etabh{scroll-margin-top:calc(var(--navh,96px) + 110px)}
+.etw{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow-x:auto}
+.et{min-width:760px;font-size:14px;border-collapse:separate;border-spacing:0}
+.et th{background:#f6f8fb;font-size:13px;color:var(--ink2);white-space:nowrap;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:bottom}
+.et td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.et th.v,.et td.v{text-align:right;width:5.4em}.et td.v{font-size:16px;color:var(--ink)}.et td.v b{font-weight:700}
+.et .nn,.et .rr{text-align:right;color:var(--ink2)}
+.et td.d{white-space:nowrap;color:var(--ink2);font-family:"Outfit","Noto Sans TC",sans-serif}
+.et td.o b{font-weight:600}.et td.mt{color:var(--ink2);white-space:nowrap}
+.et .cd{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+.et tr.er{cursor:pointer}.et tr.er:hover td:not(.v){background:#fffbea}.et tr.er.on td:not(.v){background:#fff7d6}
+.et tr.er.on td{border-bottom-color:transparent}
+.et td.x{width:40px;padding:6px}
+.xb{all:unset;cursor:pointer;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;color:var(--ink2)}
+.xb:hover{background:#fff}.xb svg{transition:transform .15s}.er.on .xb svg{transform:rotate(180deg)}
+.xb:focus-visible{outline:3px solid #7fb5ff}
+.tg{display:inline-block;font-size:12px;border-radius:999px;padding:0 8px;margin-left:6px;vertical-align:1px;white-space:nowrap;font-weight:500}
+.tg.web{background:#eef0f3;color:var(--ink2)}.tg.pc{background:#fdecea;color:#b4322a}.tg.sec{background:#fff4d6;color:#8a5a00}
+.lead{display:inline-block;white-space:nowrap;font-size:13px;font-weight:700;padding:2px 10px 2px 8px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);border-radius:0 8px 8px 0;font-family:"Outfit","Noto Sans TC",sans-serif}
+.lead.tie{--c:#a3aab4}.arr{margin:0 6px;color:var(--ink3)}
+.mh th{padding:0;background:linear-gradient(90deg,#fff6d3,#f6f8fb 70%);border-bottom:1px solid var(--line)}
+.mh button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:8px 12px}
+.mh .mt1{font-size:15px;font-weight:700;color:var(--ink)}.mh .meta{font-weight:400}
+.mh .tgl{margin-left:auto;font-size:13px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 12px}
+.mh button:focus-visible{outline:3px solid #7fb5ff;outline-offset:-3px}
+.mg.shut tr:not(.mh){display:none}
+.ed td{background:#fffdf5;padding:14px 18px 20px;border-bottom:1px solid var(--line)}
+.edin{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px 32px;align-items:start}
+.edl{display:grid;grid-template-columns:6em minmax(0,1fr);gap:4px 12px;font-size:14px;margin:0}
+.edl dt{color:var(--ink3)}.edl dd{margin:0}
+.edlk{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin-top:12px;font-size:14px;font-weight:600}
+.lk{all:unset;cursor:pointer;text-decoration:underline;text-decoration-color:#7fb5ff;text-decoration-thickness:2px;text-underline-offset:4px;font-weight:600}
+.lk:hover{text-decoration-color:var(--hi2)}.lk:focus-visible{outline:3px solid #7fb5ff;border-radius:4px}
+.lk.on{text-decoration-color:#d6dae0;font-weight:600}
+.eo tr.sel td{background:#fff7d6}
+.ofb{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;background:#fff7d6;border:1px solid #f6e3a0;border-radius:14px;padding:10px 16px;margin:0 0 12px;font-size:14px}
+.et .od{display:none}
+.et th.vsh{width:42%}.vsh{white-space:nowrap}.et th.vsh{text-align:left}.vsh{display:table-cell}
+.et th.vsh{position:relative}.et th.vsh>span:first-child{float:left}.et th.vsh>span:last-child{float:right}.et th.vsh .mid{position:absolute;left:50%;transform:translateX(-50%);font-weight:400;color:var(--ink3);font-size:12px}
+.et td.vsc{padding-top:8px;padding-bottom:8px}
+.eo th.vsh{width:34%}
+.et th.vsh2{width:44%;font-weight:600;white-space:normal}
+.mps{display:grid;grid-template-columns:minmax(60px,1fr) auto;gap:12px;align-items:center}
+.mps .pn b{display:inline-block;min-width:2.6em;text-align:right;font-size:14px;font-weight:500}.mps .pn b.hi{font-weight:700}
+.mbar.pb i:nth-child(3){border-radius:2px}.mbar.pb i:last-child{border-radius:2px 6px 6px 2px}
+.pt .edin .irow{grid-template-columns:minmax(0,6.5em) minmax(0,1fr)}.pt .edin .irow>div:last-child{display:none}.eo td:last-child{white-space:nowrap}
+@media(max-width:640px){
+ .et,.et tbody,.et tr,.et th,.et td{display:block}.et thead{display:none}
+ .et tr.er{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"o g" "b b";border-bottom:1px solid var(--line)}
+ .eo tbody tr{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"o g" "b b";border-bottom:1px solid var(--line)}
+ .et tr.er td,.eo tbody td{border-bottom:0}
+ .et td.o{grid-area:o;padding:10px 8px 2px}.et td.g{grid-area:g;padding:10px 8px 2px;align-self:start}.et td.vsc{grid-area:b;padding:6px 8px 12px}
+ .et .hs{display:none!important}
+ .mvs{grid-template-columns:2.8em minmax(0,1fr) 2.8em;gap:8px}.mbar{height:16px}
+ .et tr.er.on td{background:#fff7d6}
+ .mh th{display:block}.ed td{display:block}
+ .et tr[hidden],.mg.shut tr:not(.mh){display:none}
+}
+.mvs{display:grid;grid-template-columns:3.2em minmax(60px,1fr) 3.2em;align-items:center;gap:8px}
+.mvs b{font-size:15px;font-weight:500;font-family:"Outfit","Noto Sans TC",sans-serif}.mvs b.hi{font-weight:700;font-size:16px}
+.mvs .na{text-align:right}.mvs .nb{text-align:left}
+.mbar{position:relative;display:flex;gap:2px;height:16px}
+.mbar i{display:block;min-width:0}.mbar i:first-child{border-radius:6px 2px 2px 6px}.mbar i:nth-child(3){border-radius:2px 6px 6px 2px}.mbar .mr{background:#e6e9ee;border-radius:2px}
+.mbar em{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--ink);opacity:.45}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(max-width:760px){.edin{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.et{min-width:0;width:100%}.et .hs{display:none}.et th,.et td{padding:9px 6px}.et th.v,.et td.v{font-size:15px;width:3.4em}.et .ln{display:none}.et .od{display:block;font-size:12px;color:var(--ink3);font-weight:400;font-family:"Outfit","Noto Sans TC",sans-serif}.et th .od{display:inline}.et td.o{line-height:1.4}.ed td{padding:12px 10px 16px}.et .tg{margin:3px 0 0}.mh .meta{font-size:12px}}
+/* election month groups */
+.mgrp{margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:0 22px}
+.mgrp>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;font-weight:700;font-size:16px;color:var(--ink)}
+.mgrp>summary::-webkit-details-marker{display:none}
+.mgrp>summary::after{content:"展開";font-size:13px;font-weight:600;color:var(--ink2);background:#f2f4f7;border-radius:999px;padding:4px 12px}
+.mgrp[open]>summary::after{content:"收起"}
+.mgrp>summary .meta{font-weight:400;margin-left:8px}
+.mgrp .prow:first-of-type{border-top:1px solid var(--line)}
+@media(max-width:640px){.mgrp{padding:0 16px}}
+.more{display:block;width:100%;margin:12px 0 0;min-height:48px;border:1px dashed #cfd5de;background:#fff;border-radius:14px;font-weight:700;color:var(--ink)}
+.more:hover{background:#fff7d6;border-color:var(--hi)}
+/* filters */
+.frow{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin:0 0 14px}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink3)}
+.fld.grow{flex:1 1 240px}
+.fld select,.fld input[type=search]{font:inherit;font-size:15px;color:var(--ink);min-height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 12px}
+.fld select:focus-visible,.fld input:focus-visible{outline:3px solid #7fb5ff;outline-offset:1px}
+.ck{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:14px;color:var(--ink2);cursor:pointer}
+.ck input{width:18px;height:18px;accent-color:#f5ad0b;margin:0}
+.ck:has(input:checked){background:#fff7d6;border-color:var(--hi);color:var(--ink);font-weight:600}
+.empty{background:var(--card);border:1px dashed #cfd5de;border-radius:18px;padding:22px;color:var(--ink2);text-align:center}
+@media(prefers-reduced-motion:reduce){header,.estick{transition:none}.tip,.chip,.door,.door .go::after{transition:none}.hmove{display:none}}
+@media(max-width:600px){.hero{padding-top:36px;padding-bottom:28px}table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--ink3)}.stack td:empty{display:none}.stack tr{border-bottom:1px solid var(--line);padding-inline:12px}}
+
+/* hero 線稿插圖 */
+.hero.split.th{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);align-items:center;gap:32px}
+.hart{width:100%;max-width:340px;height:auto;justify-self:end;overflow:visible}
+@media(max-width:860px){.hart{display:none}.hero.split.th{grid-template-columns:minmax(0,1fr)}}
+.js-anim .hart .dr{stroke-dasharray:1;stroke-dashoffset:1;animation:hdraw 1.5s .15s cubic-bezier(.3,.7,.2,1) forwards}
+@keyframes hdraw{to{stroke-dashoffset:0}}
+/* 信任帶 */
+.trust{display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;margin-top:20px;padding:8px 6px;background:#ffffffb8;border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(8px);width:fit-content;max-width:100%}
+.trust span{display:inline-flex;align-items:center;gap:7px;padding:2px 14px;font-size:13.5px;color:var(--ink2);line-height:1.5}
+.trust span+span{border-left:1px solid var(--line)}
+.trust b{font-family:Outfit,"Noto Sans TC",sans-serif;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.trust svg{flex:none}
+.trust .w b{color:#8a5a00}
+@media(max-width:640px){.trust{display:grid;grid-template-columns:1fr 1fr;width:100%;padding:6px}.trust span{padding:6px 8px}.trust span+span{border-left:0}.trust span:nth-child(even){border-left:1px solid var(--line)}}
+/* 首頁來源名稱帶 */
+.srcstrip{display:flex;align-items:baseline;gap:14px;margin:18px 0 8px;padding:12px 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.srcstrip>b{flex:none;font-size:13px;color:var(--ink3);font-weight:500;letter-spacing:.06em}
+.srcstrip>div{display:flex;flex-wrap:wrap;gap:4px 0;font-size:14.5px;color:var(--ink2);font-weight:500}
+.srcstrip>div span:not(:last-child)::after{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--hi);margin:0 12px;vertical-align:middle}
+@media(max-width:640px){.srcstrip{display:block;padding:12px 0}.srcstrip>b{display:block;margin-bottom:6px}}
+/* 流程線 */
+.flow{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0 20px}
+.flow li{position:relative;padding-top:58px}
+.flow .fn{position:absolute;top:0;left:0;width:42px;height:42px;border-radius:50%;background:#fff;border:1.8px solid var(--ink);display:grid;place-items:center;font:600 16px Outfit,sans-serif;z-index:1;box-shadow:0 0 0 6px var(--bg)}
+.band.alt .flow .fn{box-shadow:0 0 0 6px #f3f5f9}
+.flow li:last-child .fn{background:var(--hi)}
+.flow li::after{content:"";position:absolute;top:20px;left:52px;right:-10px;height:2px;background:repeating-linear-gradient(90deg,var(--ink3) 0 6px,transparent 6px 11px);transform-origin:left}
+.flow li:last-child::after{display:none}
+.flow b{display:block;font-size:16.5px;margin-bottom:5px}
+.flow p{margin:0;font-size:14.5px;line-height:1.6;color:var(--ink2)}
+.flow .fx{display:inline-block;margin-top:10px;padding:3px 10px;border-radius:999px;background:#fff7d6;font-size:12.5px;color:#6b5200;line-height:1.5}
+@media(max-width:860px){.flow{grid-template-columns:minmax(0,1fr);gap:22px}.flow li{padding:0 0 0 62px;min-height:42px}.flow li::after{top:50px;left:20px;right:auto;bottom:-18px;width:2px;height:auto;background:repeating-linear-gradient(180deg,var(--ink3) 0 6px,transparent 6px 11px);transform-origin:top}}
+.js-anim .band .flow li::after{transform:scaleX(0);transition:transform .7s cubic-bezier(.3,.7,.2,1) var(--d,0s)}
+.js-anim .band .flow .fn{opacity:0;transform:scale(.6);transition:opacity .4s,transform .4s cubic-bezier(.3,1.4,.5,1)}
+.js-anim .band.in .flow li::after{transform:none}
+.js-anim .band.in .flow .fn{opacity:1;transform:none}
+@media(max-width:860px){.js-anim .band .flow li::after{transform:scaleY(0)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <a class="brand" href="#home" aria-label="民調看板首頁"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#fdda5a"/><stop offset=".55" stop-color="#9fe3d6"/><stop offset="1" stop-color="#7fb5ff"/></linearGradient></defs><rect width="30" height="30" rx="9" fill="url(#lg)"/><rect x="7" y="15" width="4" height="8" rx="2" fill="#1d2127"/><rect x="13" y="10" width="4" height="13" rx="2" fill="#1d2127"/><rect x="19" y="6" width="4" height="17" rx="2" fill="#1d2127" opacity=".85"/></svg>民調看板 <small>原型 · 資料整理至 2026/11/20</small></a>
+  <nav id="nav">
+    <a href="#home">首頁</a><a href="#approval">施政滿意度</a><a href="#party">政黨支持度</a><a href="#election">選舉民調</a><a href="#sources">追蹤來源</a><a href="#about">揭露聲明與方法</a>
+  </nav>
+  </div>
+</header>
+<div class="notice" id="notice" hidden><div class="wrap"></div></div>
+
+<main class="wrap">
+<!-- 首頁 -->
+<section data-view="home">
+  <div class="hero split hhero">
+    <div>
+      <p class="eyebrow2">台灣公開民調整理站</p>
+      <h1>把散落各處的公開民調，<span class="mark">整理成看得懂的樣子</span></h1>
+      <p class="lede">選舉、施政滿意度、政黨支持度，每週都有新民調，散在不同媒體與記者會裡，題目、方法、委託單位各不相同。民調看板把它們蒐集起來、追回原始出處，排成可以一眼比較的圖表。</p>
+      <div class="hcta"><a class="btn" href="#approval">看最新施政滿意度</a><a class="btn ghost" href="#about">我們怎麼整理</a></div>
+    </div>
+    <svg class="hill" viewBox="0 0 560 420" role="img" aria-label="插圖：散落的民調報導經過整理，匯入一張附出處的圖表看板">
+      <defs>
+        <linearGradient id="hg1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#fdda5a"/><stop offset=".55" stop-color="#9fe3d6"/><stop offset="1" stop-color="#7fb5ff"/></linearGradient>
+        <radialGradient id="hg2"><stop offset="0" stop-color="#9fe3d6" stop-opacity=".55"/><stop offset="1" stop-color="#9fe3d6" stop-opacity="0"/></radialGradient>
+        <radialGradient id="hg3"><stop offset="0" stop-color="#fdda5a" stop-opacity=".5"/><stop offset="1" stop-color="#fdda5a" stop-opacity="0"/></radialGradient>
+        <filter id="hsh" x="-25%" y="-25%" width="150%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#2a3a60" flood-opacity=".14"/></filter>
+        <path id="fp1" d="M200 92 C 262 92, 248 150, 306 150"/>
+        <path id="fp2" d="M222 240 C 266 240, 262 220, 306 220"/>
+        <path id="fp3" d="M180 336 C 256 336, 250 290, 306 290"/>
+      </defs>
+      <circle cx="404" cy="206" r="196" fill="url(#hg2)"/>
+      <circle cx="118" cy="112" r="124" fill="url(#hg3)"/>
+      <g fill="none" stroke="#7fb5ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 9"><use href="#fp1"/><use href="#fp2"/><use href="#fp3"/></g>
+      <g class="hmove">
+        <circle r="5" fill="#fdda5a" stroke="#fff" stroke-width="2"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#fp1"/></animateMotion></circle>
+        <circle r="5" fill="#9fe3d6" stroke="#fff" stroke-width="2"><animateMotion dur="3.2s" begin="1.05s" repeatCount="indefinite"><mpath href="#fp2"/></animateMotion></circle>
+        <circle r="5" fill="#7fb5ff" stroke="#fff" stroke-width="2"><animateMotion dur="3.2s" begin="2.1s" repeatCount="indefinite"><mpath href="#fp3"/></animateMotion></circle>
+      </g>
+      <g transform="translate(46 58) rotate(-7)" filter="url(#hsh)">
+        <rect width="152" height="98" rx="14" fill="#fff" stroke="#e6e9ee"/>
+        <rect x="16" y="16" width="74" height="9" rx="4.5" fill="#1d2127" opacity=".85"/>
+        <rect x="16" y="33" width="118" height="6" rx="3" fill="#d6dae0"/><rect x="16" y="45" width="96" height="6" rx="3" fill="#d6dae0"/>
+        <rect x="16" y="70" width="12" height="16" rx="3" fill="#7fb5ff"/><rect x="32" y="60" width="12" height="26" rx="3" fill="#9fe3d6"/><rect x="48" y="65" width="12" height="21" rx="3" fill="#fdda5a"/>
+        <rect x="74" y="66" width="60" height="6" rx="3" fill="#e6e9ee"/><rect x="74" y="78" width="44" height="6" rx="3" fill="#e6e9ee"/>
+      </g>
+      <g transform="translate(64 176) rotate(4)" filter="url(#hsh)">
+        <rect width="160" height="106" rx="14" fill="#fff" stroke="#e6e9ee"/>
+        <text x="16" y="58" font-family="Outfit,sans-serif" font-size="42" font-weight="700" fill="#1d2127">%</text>
+        <rect x="64" y="22" width="80" height="9" rx="4.5" fill="#1d2127" opacity=".85"/><rect x="64" y="39" width="66" height="6" rx="3" fill="#d6dae0"/>
+        <rect x="16" y="74" width="128" height="6" rx="3" fill="#d6dae0"/><rect x="16" y="86" width="98" height="6" rx="3" fill="#d6dae0"/>
+      </g>
+      <g transform="translate(32 300) rotate(-3)" filter="url(#hsh)">
+        <rect width="146" height="86" rx="14" fill="#fff" stroke="#e6e9ee"/>
+        <circle cx="38" cy="43" r="18" fill="none" stroke="#eef0f3" stroke-width="9"/>
+        <circle cx="38" cy="43" r="18" fill="none" stroke="#7fb5ff" stroke-width="9" stroke-dasharray="50 63.1" transform="rotate(-90 38 43)"/>
+        <circle cx="38" cy="43" r="18" fill="none" stroke="#fdda5a" stroke-width="9" stroke-dasharray="30 83.1" stroke-dashoffset="-52" transform="rotate(-90 38 43)"/>
+        <rect x="70" y="28" width="60" height="8" rx="4" fill="#1d2127" opacity=".85"/><rect x="70" y="44" width="50" height="6" rx="3" fill="#d6dae0"/><rect x="70" y="56" width="36" height="6" rx="3" fill="#d6dae0"/>
+      </g>
+      <g transform="translate(178 198)"><circle r="26" fill="#ffffff80" stroke="#fdda5a" stroke-width="7"/><path d="M19 19 L35 35" stroke="#1d2127" stroke-width="8" stroke-linecap="round"/></g>
+      <g transform="translate(306 54)" filter="url(#hsh)">
+        <rect width="228" height="314" rx="22" fill="#fff" stroke="#e6e9ee"/>
+        <path d="M22 .5H206a21.5 21.5 0 0 1 21.5 21.5V54H.5V22A21.5 21.5 0 0 1 22 .5Z" fill="url(#hg1)" opacity=".2"/>
+        <rect x="18" y="16" width="24" height="24" rx="7" fill="url(#hg1)"/>
+        <rect x="23" y="28" width="3.5" height="7" rx="1.5" fill="#1d2127"/><rect x="28.5" y="24" width="3.5" height="11" rx="1.5" fill="#1d2127"/><rect x="34" y="21" width="3.5" height="14" rx="1.5" fill="#1d2127"/>
+        <rect x="52" y="19" width="74" height="8" rx="4" fill="#1d2127" opacity=".85"/><rect x="52" y="32" width="48" height="6" rx="3" fill="#7d8794" opacity=".4"/>
+        <circle cx="186" cy="28" r="4" fill="#d6dae0"/><circle cx="198" cy="28" r="4" fill="#d6dae0"/><circle cx="210" cy="28" r="4" fill="#fdda5a"/>
+        <g transform="translate(0 72)">
+          <rect x="18" y="3" width="34" height="6" rx="3" fill="#d6dae0"/>
+          <rect x="62" y="0" width="64" height="12" rx="5" fill="#2b3440"/><rect x="128" y="0" width="30" height="12" rx="3" fill="#e6e9ee"/><rect x="160" y="0" width="50" height="12" rx="5" fill="#7fb5ff"/>
+          <rect x="18" y="25" width="28" height="6" rx="3" fill="#d6dae0"/>
+          <rect x="62" y="22" width="52" height="12" rx="5" fill="#2b3440"/><rect x="116" y="22" width="44" height="12" rx="3" fill="#e6e9ee"/><rect x="162" y="22" width="48" height="12" rx="5" fill="#7fb5ff"/>
+          <rect x="18" y="47" width="38" height="6" rx="3" fill="#d6dae0"/>
+          <rect x="62" y="44" width="72" height="12" rx="5" fill="#2b3440"/><rect x="136" y="44" width="22" height="12" rx="3" fill="#e6e9ee"/><rect x="160" y="44" width="50" height="12" rx="5" fill="#7fb5ff"/>
+        </g>
+        <line x1="18" x2="210" y1="146" y2="146" stroke="#eef0f3" stroke-width="2"/>
+        <g stroke="#eef0f3" stroke-width="1.5"><line x1="18" x2="210" y1="170" y2="170"/><line x1="18" x2="210" y1="202" y2="202"/><line x1="18" x2="210" y1="234" y2="234"/></g>
+        <polyline points="18,222 60,206 102,212 144,190 186,184 210,176" fill="none" stroke="#2b3440" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="18,194 60,199 102,186 144,192 186,170 210,165" fill="none" stroke="#2a78d6" stroke-width="3" stroke-dasharray="8 5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="18,240 60,230 102,234 144,220 186,215 210,206" fill="none" stroke="#1baf7a" stroke-width="3.4" stroke-dasharray=".5 6" stroke-linecap="round"/>
+        <circle cx="210" cy="176" r="4.5" fill="#2b3440" stroke="#fff" stroke-width="2"/><circle cx="210" cy="165" r="4.5" fill="#2a78d6" stroke="#fff" stroke-width="2"/><circle cx="210" cy="206" r="4.5" fill="#1baf7a" stroke="#fff" stroke-width="2"/>
+        <g transform="translate(18 266)"><rect width="128" height="30" rx="15" fill="#fff7d6" stroke="#fdda5a"/><circle cx="16" cy="15" r="9" fill="#fdda5a"/><path d="M11.5 15.2l3 3 5.5-6" fill="none" stroke="#1d2127" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><text x="31" y="20" font-size="13" font-weight="700" fill="#1d2127" font-family="'Noto Sans TC',sans-serif">附原始出處</text></g>
+        <g transform="translate(156 270)"><rect width="54" height="22" rx="11" fill="#eef4ff"/><text x="27" y="15.5" text-anchor="middle" font-size="12" font-weight="600" fill="#4c5561" font-family="Outfit,sans-serif">±3.0%</text></g>
+      </g>
+      <path d="M522 30l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#fdda5a"/>
+      <path d="M284 26l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5z" fill="#7fb5ff"/>
+      <circle cx="544" cy="392" r="5" fill="#9fe3d6"/><circle cx="262" cy="398" r="3.5" fill="#fdda5a"/>
+    </svg>
+  </div>
+  <div class="hstats" id="hstats"></div>
+  <div class="srcstrip" id="srcstrip"></div>
+  <div class="band alt">
+  <h2>我們的做法</h2>
+  <div class="tenets">
+    <div><span class="ti"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><rect x="9" y="6" width="25" height="32" rx="5" fill="#fff" stroke="#1d2127" stroke-width="2.2"/><path d="M15 15h13M15 21h13M15 27h8" stroke="#1d2127" stroke-width="2.2" stroke-linecap="round"/><circle cx="34" cy="35" r="9" fill="#fdda5a" stroke="#1d2127" stroke-width="2.2"/><path d="M30 35.3l2.8 2.8 5-5.6" fill="none" stroke="#1d2127" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <h3>只收公開發布的民調</h3><p>媒體、學術單位、智庫、協會自辦的民調都收；政黨或候選人委託的也收，但一律標出委託方。AI 模擬、網路投票、街頭訪問不收。</p></div>
+    <div><span class="ti"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><circle cx="20" cy="20" r="12.5" fill="#fff1b8" stroke="#1d2127" stroke-width="2.2"/><path d="M14.5 17h11M14.5 22.5h7" stroke="#1d2127" stroke-width="2.2" stroke-linecap="round"/><path d="M29.5 29.5l9.5 9.5" stroke="#1d2127" stroke-width="3.6" stroke-linecap="round"/></svg></span>
+      <h3>每個數字都追回原始出處</h3><p>優先連到民調單位官網或首發報導，記下調查日期、樣本數、誤差和誰出錢、誰執行。只找得到轉述的，標「待核」。</p></div>
+    <div><span class="ti"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><rect x="5" y="8" width="38" height="32" rx="6" fill="#fff" stroke="#1d2127" stroke-width="2.2"/><path d="M11 31l8-6 7 3 11-9" fill="none" stroke="#1d2127" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 22l8 2 7-5 11 1" fill="none" stroke="#2a78d6" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/><path d="M11 35l8-1 7-3 11 1" fill="none" stroke="#1baf7a" stroke-width="2.8" stroke-dasharray=".5 4.5" stroke-linecap="round"/></svg></span>
+      <h3>各家分開看，不混成平均</h3><p>每家的題目和方法不同，所以先看各家自己的走勢；想看大方向時，再切到標明算法的「綜合參考線」。</p></div>
+  </div>
+  </div>
+  <div class="band">
+  <h2>一份民調怎麼進到看板</h2>
+  <ol class="flow" id="flow-home"></ol>
+  </div>
+  <div class="band alt">
+  <h2>從這裡開始</h2>
+  <div class="doors" id="doors"></div>
+  <p class="meta" style="margin-top:20px">民調看板不做民調，只整理已公開的民調。收錄規則、排除規則和數字怎麼算，寫在<a href="#about">「揭露聲明與方法」</a>。</p>
+  </div>
+</section>
+
+<!-- 施政滿意度 -->
+<section data-view="approval">
+  <div class="hero split th"><div><p class="eyebrow2">施政滿意度・每月更新・三家機構</p><h1>美麗島與台灣民心的 10 月民調都顯示：賴清德執政滿意度<span class="mark">突破五成</span></h1>
+  <p class="lede">每月固定發布總統施政評價的有美麗島電子報、台灣民心調查和震傳媒三家。各家題目和執行公司不同，所以這裡先看<b>各家各自的數字</b>；需要一眼看大方向時，可切到「綜合參考線」。</p><div class="trust" id="tr-app"></div></div><svg class="hart" viewBox="0 0 360 240" role="img" aria-label="插圖：一個指向五成以上的滿意度量表"><defs><radialGradient id="ha-g"><stop offset="0" stop-color="#9fe3d6" stop-opacity=".55"/><stop offset="1" stop-color="#9fe3d6" stop-opacity="0"/></radialGradient></defs><circle cx="236" cy="110" r="118" fill="url(#ha-g)"/>
+<path d="M68.1 191.9 A118 118 0 0 1 123.5 95.9" fill="none" stroke="#9fe3d6" stroke-width="7" stroke-linecap="round"/>
+<path d="M194.2 78.3 A118 118 0 0 1 300.5 167.5" fill="none" stroke="#fdda5a" stroke-width="7" stroke-linecap="round"/>
+<g fill="none" stroke="#1d2127" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path class="dr" pathLength="1" d="M82.0 196.0 A104 104 0 0 1 290.0 196.0"/><line x1="96.0" y1="196.0" x2="86.0" y2="196.0"/><line x1="108.1" y1="151.0" x2="99.4" y2="146.0"/><line x1="141.0" y1="118.1" x2="136.0" y2="109.4"/><line x1="186.0" y1="106.0" x2="186.0" y2="96.0"/><line x1="231.0" y1="118.1" x2="236.0" y2="109.4"/><line x1="263.9" y1="151.0" x2="272.6" y2="146.0"/><line x1="276.0" y1="196.0" x2="286.0" y2="196.0"/><path class="dr" pathLength="1" d="M186 196 L203.5 113.8" stroke-width="2.6"/></g>
+<circle cx="186" cy="196" r="9" fill="#fff" stroke="#1d2127" stroke-width="1.8"/>
+<g transform="translate(18 26)"><rect class="dr" pathLength="1" width="118" height="76" rx="14" fill="#fff" stroke="#1d2127" stroke-width="1.8"/>
+<line x1="16" y1="20" x2="62" y2="20" stroke="#1d2127" stroke-width="5" stroke-linecap="round"/>
+<polyline class="dr" pathLength="1" points="16,58 38,50 58,54 80,38 102,34" fill="none" stroke="#1d2127" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="102" cy="34" r="4" fill="#fdda5a" stroke="#1d2127" stroke-width="1.5"/></g>
+<g transform="translate(130 26)"><circle r="13" fill="#fdda5a" stroke="#1d2127" stroke-width="1.8"/><path d="M-5.5 .5l3.6 3.6 7-7.6" fill="none" stroke="#1d2127" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<path d="M326 31l2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5z" fill="#fdda5a"/><path d="M300 208l1.7 4.3 4.3 1.7-4.3 1.7-1.7 4.3-1.7-4.3-4.3-1.7 4.3-1.7z" fill="#7fb5ff"/><circle cx="40" cy="206" r="4" fill="#9fe3d6"/></svg></div>
+  <div class="band alt">
+  <div class="chips" role="group" aria-label="指標">
+    <button class="chip" data-metric="sat" aria-pressed="true">執政滿意度</button>
+    <button class="chip" data-metric="trust" aria-pressed="false">信任度</button>
+  </div>
+  <h2>整體走勢</h2>
+  <div class="chips" role="group" aria-label="趨勢呈現方式">
+    <button class="chip" data-tmode="each" aria-pressed="true">各家走勢</button>
+    <button class="chip" data-tmode="avg" aria-pressed="false">綜合參考線</button>
+  </div>
+  <div class="panel">
+    <div class="legend" id="tlegend"></div>
+    <div id="trend" class="trendbox"></div>
+    <p class="meta" id="tnote"></p>
+  </div>
+  </div>
+  <div class="band">
+  <h2>各家最新一期</h2>
+  <div id="latest" class="kpis"></div>
+  </div>
+  <div class="band alt">
+  <h2 id="atabh">全部民調</h2>
+  <div class="chips" id="appmon" data-tkey="app" role="group" aria-label="選擇月份"></div>
+  <p class="meta" id="anote" style="margin:0 0 10px"></p>
+  <div id="atab"></div>
+  </div>
+  <div class="band">
+  <h2>行政院長卓榮泰施政滿意度（10 月）</h2>
+  <div id="premier"></div>
+  <p class="meta" style="margin-top:24px">目前追蹤 <span id="srcn"></span> 個民調來源，完整清單見<a href="#sources">「追蹤來源」</a>。</p>
+  </div>
+</section>
+
+<!-- 政黨支持度 -->
+<section data-view="party">
+  <div class="hero split th"><div><p class="eyebrow2">政黨支持度・全國・每月更新</p><h1>政黨支持度：民進黨三成五上下，國民黨<span class="mark">一成五到兩成</span>，民眾黨跌到一成以下</h1>
+  <p class="lede">「政黨支持度」問的是<b>你自己支持、認同哪一個政黨</b>，每人只能選一個，加上中立、未表態合計 100%。這和「喜好度／好感度」不同，後者是對每個政黨分別問喜不喜歡，同一個人可以同時喜歡兩個黨，各黨數字加起來不是 100%。</p><div class="trust" id="tr-ps"></div></div><svg class="hart" viewBox="0 0 360 240" role="img" aria-label="插圖：一張單選的政黨傾向問卷與分段長條"><defs><radialGradient id="hp-g"><stop offset="0" stop-color="#fdda5a" stop-opacity=".55"/><stop offset="1" stop-color="#fdda5a" stop-opacity="0"/></radialGradient></defs><circle cx="118" cy="96" r="112" fill="url(#hp-g)"/>
+<g transform="translate(44 22)"><rect class="dr" pathLength="1" width="188" height="150" rx="16" fill="#fff" stroke="#1d2127" stroke-width="1.8"/>
+<line x1="20" y1="24" x2="86" y2="24" stroke="#1d2127" stroke-width="6" stroke-linecap="round"/><line x1="20" y1="40" x2="150" y2="40" stroke="#d6dae0" stroke-width="5" stroke-linecap="round"/>
+<g fill="none" stroke="#1d2127" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="72" r="8.5"/><line x1="50" y1="72" x2="150" y2="72"/><circle cx="30" cy="102" r="8.5" fill="#fdda5a"/><line x1="50" y1="102" x2="128" y2="102"/><circle cx="30" cy="132" r="8.5"/><line x1="50" y1="132" x2="140" y2="132"/></g>
+<path d="M25.5 102.4l3.2 3.2 6-6.6" fill="none" stroke="#1d2127" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="160" y="106" font-family="'Noto Sans TC',sans-serif" font-size="12" font-weight="700" fill="#1d2127">單選</text></g>
+<g transform="translate(288 102)"><circle r="44" fill="#fff" stroke="#1d2127" stroke-width="1.8"/><circle r="32" fill="none" stroke="#9fe3d6" stroke-width="16" stroke-dasharray="70 131" transform="rotate(-90)"/><circle r="32" fill="none" stroke="#fdda5a" stroke-width="16" stroke-dasharray="44 157" stroke-dashoffset="-73" transform="rotate(-90)"/><circle r="20" fill="#fff" stroke="#1d2127" stroke-width="1.8"/><text y="5" text-anchor="middle" font-family="Outfit,sans-serif" font-size="13" font-weight="700" fill="#1d2127">100</text></g>
+<defs><pattern id="hp-h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#7d8794" stroke-width="1.4"/></pattern></defs>
+<g transform="translate(44 196)" stroke="#1d2127" stroke-width="1.6"><rect width="96" height="18" rx="6" fill="#fff1b8"/><rect x="100" width="58" height="18" rx="4" fill="#e4f9ff"/><rect x="162" width="30" height="18" rx="4" fill="#fff"/><rect x="196" width="76" height="18" rx="6" fill="url(#hp-h)"/></g>
+<path d="M334 25l2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5z" fill="#7fb5ff"/><path d="M22 194l1.7 4.3 4.3 1.7-4.3 1.7-1.7 4.3-1.7-4.3-4.3-1.7 4.3-1.7z" fill="#fdda5a"/></svg></div>
+  <div class="band alt">
+  <h2>整體走勢</h2>
+  <div class="chips" role="group" aria-label="趨勢呈現方式"><button class="chip" data-pmode="each" aria-pressed="true">各家走勢</button><button class="chip" data-pmode="avg" aria-pressed="false">綜合參考線</button></div>
+  <div class="panel"><div class="legend"><span><i class="ld" style="background:var(--dpp)"></i>民進黨</span><span><i class="ld" style="background:var(--kmt)"></i>國民黨</span><span><i class="ld" style="background:var(--tpp)"></i>民眾黨</span><span class="lg2">每格一家機構・四格刻度相同</span></div>
+  <div id="psfig" class="trendbox"></div>
+  <p class="meta" id="psnote"></p></div>
+  </div>
+  <div class="band">
+  <h2>各家最新一期</h2>
+  <div id="pover"></div>
+  </div>
+  <div class="band alt">
+  <h2>全部民調</h2>
+  <div class="chips" id="psmon" data-tkey="ps" role="group" aria-label="選擇月份"></div>
+  <p class="meta" id="pnote" style="margin:0 0 10px"></p>
+  <div id="ptab"></div>
+  </div>
+  <div class="band">
+  <h2>支持度和喜好度不一樣</h2>
+  <div class="cmp">
+    <div><h3>政黨支持度（政黨認同）</h3><p>「在所有政黨中，您比較支持（傾向）哪一個政黨？」<br>單選題；反映各黨的<b>基本盤</b>有多大。</p></div>
+    <div><h3>政黨喜好度（好感度）</h3><p>「您對民進黨有沒有好感？」再分別問國民黨、民眾黨。<br>逐黨分開問；反映<b>形象與觀感</b>，不等於會投給誰。</p></div>
+  </div>
+  <h3 style="margin:22px 0 8px;font-size:17px">對照：政黨喜好度（美麗島電子報，10 月）</h3>
+  <p class="lede">同一時期，喜好度的數字看起來高很多，因為它不是單選。兩種數字不能互相比較，也不能換算。</p>
+  <div class="legend"><span><i class="sw" style="color:var(--pos);border-top-width:8px"></i>喜歡</span><span><i class="sw" style="color:var(--mid);border-top-width:8px"></i>未明確回答</span><span><i class="sw" style="color:var(--neg);border-top-width:8px"></i>不喜歡</span></div>
+  <div id="pfav"></div>
+  <p class="meta">「較上月」為喜歡比例的變化。美麗島自 9 月起把題組從「好感度」改為「喜好度」，所以 9 月以前的數字不直接接續。</p>
+  </div>
+</section>
+
+<!-- 選舉 -->
+<section data-view="election">
+  <div id="elock"></div>
+  <div id="ebody" hidden>
+    <div class="hero split th"><div><div class="water">內部預覽：選舉民調封關期間（2026/11/18 00:00 至 11/28 16:00），以下內容<b>不得對外分享、轉傳或截圖發布</b>。</div>
+    <p class="eyebrow2">選舉民調・六都市長・封關前</p>
+    <h1 id="etitle">六都市長：封關前公開民調對照</h1>
+    <p class="lede">每一列是一份民調。各家的調查方式（市話、手機、網路問卷）、日期和委託單位都不同，<b>本站不公布平均數字</b>；電話民調夠多時才畫一條參考趨勢線，其餘請看範圍、看同一家前後的變化。</p><div class="trust" id="tr-el"></div></div><svg class="hart" viewBox="0 0 360 240" role="img" aria-label="插圖：投票箱與投票日日曆"><defs><radialGradient id="he-g"><stop offset="0" stop-color="#7fb5ff" stop-opacity=".55"/><stop offset="1" stop-color="#7fb5ff" stop-opacity="0"/></radialGradient></defs><circle cx="214" cy="128" r="120" fill="url(#he-g)"/>
+<g transform="translate(184 18) rotate(-8)"><rect class="dr" pathLength="1" width="56" height="78" rx="7" fill="#fff" stroke="#1d2127" stroke-width="1.8"/><line x1="12" y1="16" x2="44" y2="16" stroke="#d6dae0" stroke-width="5" stroke-linecap="round"/><circle cx="28" cy="44" r="12" fill="#fdda5a" stroke="#1d2127" stroke-width="1.6"/><path d="M22.5 44.3l3.6 3.6 7-7.6" fill="none" stroke="#1d2127" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g stroke="#1d2127" stroke-width="1.8" stroke-linejoin="round"><path d="M126 108 L156 84 L314 84 L284 108 Z" fill="#f4f6f9"/><path d="M284 108 L314 84 L314 186 L284 210 Z" fill="#e6e9ee"/><rect class="dr" pathLength="1" x="126" y="108" width="158" height="102" rx="6" fill="#fff"/></g>
+<path d="M184 100 L196 91 L256 91 L244 100 Z" fill="#1d2127"/>
+<g transform="translate(205 160)"><circle r="22" fill="none" stroke="#1d2127" stroke-width="1.8"/><text y="7" text-anchor="middle" font-family="'Noto Sans TC',sans-serif" font-size="19" font-weight="700" fill="#1d2127">票</text></g>
+<g transform="translate(22 56)"><rect width="78" height="24" rx="10" fill="#fdda5a"/><rect y="12" width="78" height="12" fill="#fdda5a"/><rect class="dr" pathLength="1" width="78" height="80" rx="10" fill="none" stroke="#1d2127" stroke-width="1.8"/><line x1="0" y1="24" x2="78" y2="24" stroke="#1d2127" stroke-width="1.8"/><g stroke="#1d2127" stroke-width="2.4" stroke-linecap="round"><line x1="22" y1="-6" x2="22" y2="8"/><line x1="56" y1="-6" x2="56" y2="8"/></g>
+<text x="39" y="18" text-anchor="middle" font-family="'Noto Sans TC',sans-serif" font-size="11" font-weight="700" fill="#1d2127">11 月</text><text x="39" y="64" text-anchor="middle" font-family="Outfit,sans-serif" font-size="32" font-weight="700" fill="#1d2127">28</text></g>
+<path d="M100 120 C 118 128, 104 150, 124 156" fill="none" stroke="#7fb5ff" stroke-width="2.4" stroke-dasharray="1 7" stroke-linecap="round"/>
+<path d="M334 21l2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5z" fill="#fdda5a"/><circle cx="40" cy="190" r="4" fill="#9fe3d6"/><path d="M78 212l1.7 4.3 4.3 1.7-4.3 1.7-1.7 4.3-1.7-4.3-4.3-1.7 4.3-1.7z" fill="#7fb5ff"/></svg></div>
+    <div class="estick"><div class="chips" id="races" role="group" aria-label="選擇縣市"></div>
+    <div class="cands" id="cands"></div></div>
+    <div class="band alt">
+    <h2>整體走勢</h2>
+    <div class="panel" id="etl"><p class="meta" style="margin:0 0 6px">依調查日期排列，每個點是一份民調</p><div class="fig" style="min-height:320px"><svg aria-label="依調查日期排列的選舉民調"></svg></div><p class="meta" id="etlnote"></p></div>
+    </div>
+    <div class="band">
+    <h2>近期摘要</h2>
+    <div class="sum" id="esum"></div>
+    <h2>各家最新一期</h2>
+    <div id="eorgs"></div>
+    </div>
+    <div class="band alt">
+    <h2 id="etabh">全部民調</h2>
+    <div class="chips" id="emon" role="group" aria-label="選擇月份"></div>
+    <div id="eorgbar"></div>
+    <p class="meta" id="emnote" style="margin:0 0 10px"></p>
+    <div id="etab"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 來源 -->
+<section data-view="sources">
+  <div class="hero split th"><div><p class="eyebrow2">追蹤來源・委託／規劃／執行分開記錄</p><h1>追蹤 <span id="srccount"></span> 個民調來源，<span class="mark">委託、規劃、執行分開記錄</span></h1>
+  <p class="lede">同一位學者可能幫不同媒體設計問卷，同一家民調公司也可能接不同單位的案子。所以每份民調都要分開記錄<b>委託出錢的是誰、問卷誰設計、電訪誰執行</b>，不能只寫一個「民調單位」。</p><div class="trust" id="tr-src"></div></div><svg class="hart" viewBox="0 0 360 240" role="img" aria-label="插圖：委託、設計、執行三個環節分開記錄"><defs><radialGradient id="hs-g"><stop offset="0" stop-color="#9fe3d6" stop-opacity=".55"/><stop offset="1" stop-color="#9fe3d6" stop-opacity="0"/></radialGradient></defs><circle cx="180" cy="104" r="120" fill="url(#hs-g)"/>
+<g fill="none" stroke="#1d2127" stroke-width="1.8" stroke-linecap="round"><path class="dr" pathLength="1" d="M98 138 C 122 138, 116 92, 140 92"/><path class="dr" pathLength="1" d="M220 92 C 244 92, 238 138, 262 138"/></g>
+<circle cx="140" cy="92" r="4" fill="#fdda5a" stroke="#1d2127" stroke-width="1.4"/><circle cx="262" cy="138" r="4" fill="#fdda5a" stroke="#1d2127" stroke-width="1.4"/>
+<g transform="translate(18 108)"><rect class="dr" pathLength="1" width="80" height="62" rx="14" fill="#fff" stroke="#1d2127" stroke-width="1.8"/><g stroke="#1d2127" stroke-width="1.6"><ellipse cx="40" cy="40" rx="16" ry="6" fill="#fff1b8"/><path d="M24 34v6M56 34v6" /><ellipse cx="40" cy="34" rx="16" ry="6" fill="#fdda5a"/><path d="M24 28v6M56 28v6"/><ellipse cx="40" cy="27" rx="16" ry="6" fill="#fff1b8"/></g><text x="40" y="84" text-anchor="middle" font-family="'Noto Sans TC',sans-serif" font-size="13" font-weight="700" fill="#4c5561">委託出資</text></g><g transform="translate(140 62)"><rect class="dr" pathLength="1" width="80" height="62" rx="14" fill="#fff" stroke="#1d2127" stroke-width="1.8"/><g stroke="#1d2127" stroke-width="1.6" stroke-linecap="round"><rect x="24" y="14" width="26" height="34" rx="4" fill="#fff"/><line x1="30" y1="24" x2="44" y2="24"/><line x1="30" y1="31" x2="44" y2="31"/><line x1="30" y1="38" x2="38" y2="38"/><path d="M48 44 L60 22 L64 24 L52 46 L47 48 Z" fill="#fdda5a" stroke-linejoin="round"/></g><text x="40" y="84" text-anchor="middle" font-family="'Noto Sans TC',sans-serif" font-size="13" font-weight="700" fill="#4c5561">問卷設計</text></g><g transform="translate(262 108)"><rect class="dr" pathLength="1" width="80" height="62" rx="14" fill="#fff" stroke="#1d2127" stroke-width="1.8"/><g stroke="#1d2127" stroke-width="1.6" stroke-linecap="round"><rect x="30" y="12" width="20" height="38" rx="5" fill="#e4f9ff"/><line x1="37" y1="17" x2="43" y2="17"/><circle cx="40" cy="44" r="2" fill="#1d2127"/><path d="M56 22a10 10 0 0 1 0 14M60 18a16 16 0 0 1 0 22" fill="none"/></g><text x="40" y="84" text-anchor="middle" font-family="'Noto Sans TC',sans-serif" font-size="13" font-weight="700" fill="#4c5561">電訪執行</text></g>
+<g transform="translate(226 38)"><circle r="17" fill="#ffffffb0" stroke="#1d2127" stroke-width="2.2"/><line x1="12" y1="12" x2="24" y2="24" stroke="#1d2127" stroke-width="4" stroke-linecap="round"/></g>
+<path d="M40 31l2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5z" fill="#fdda5a"/><path d="M330 40l1.7 4.3 4.3 1.7-4.3 1.7-1.7 4.3-1.7-4.3-4.3-1.7 4.3-1.7z" fill="#7fb5ff"/><circle cx="170" cy="220" r="4" fill="#9fe3d6"/></svg></div>
+  <div class="chips" id="srcf" role="group" aria-label="篩選">
+    <button class="chip" data-f="all" aria-pressed="true">全部</button>
+    <button class="chip" data-f="選舉" aria-pressed="false">有做選舉民調</button>
+    <button class="chip" data-f="施政" aria-pressed="false">有做施政滿意度</button>
+    <button class="chip" data-f="議題" aria-pressed="false">有做政黨／議題</button>
+  </div>
+  <div class="frow">
+    <label class="fld"><span>類型</span><select id="srck"><option value="">全部類型</option></select></label>
+    <label class="fld"><span>狀態</span><select id="srcs"><option value="">全部</option><option value="1">運作中</option><option value="0">已停止</option></select></label>
+    <label class="fld grow"><span>搜尋</span><input id="srcq" type="search" placeholder="機構、執行公司或學者名稱，例如：戴立安"></label>
+  </div>
+  <p class="meta" id="srcres"></p>
+  <div id="srcgroups"></div>
+  <h2>全部收錄民調</h2>
+  <p class="lede">本站收錄的每一份民調，一張表列完。可以依主題、機構篩選，或只看還沒核對到原始報告的「待核」、陣營委託和網路問卷。</p>
+  <div class="frow" style="margin-top:16px">
+    <label class="fld"><span>主題</span><select id="pit"><option value="">全部主題</option><option>選舉</option><option>施政滿意度</option><option>政黨支持度</option></select></label>
+    <label class="fld grow"><span>機構或縣市</span><input id="piq" type="search" placeholder="例如：TVBS、台中"></label>
+  </div>
+  <div class="frow" role="group" aria-label="只看">
+    <label class="ck"><input type="checkbox" data-pf="待核">只看待核</label>
+    <label class="ck"><input type="checkbox" data-pf="陣營委託">只看陣營委託</label>
+    <label class="ck"><input type="checkbox" data-pf="網路問卷">只看網路問卷</label>
+    <label class="ck"><input type="checkbox" data-pf="日期未載明">只看日期未載明</label>
+  </div>
+  <p class="meta" id="pires"></p>
+  <div id="pibox"></div>
+</section>
+
+<!-- 揭露聲明與方法 -->
+<section data-view="about">
+  <div class="hero split th"><div><p class="eyebrow2">揭露聲明與方法</p><h1>揭露聲明：<span class="mark">我們不做民調</span>，只整理公開民調</h1>
+  <p class="lede">這一頁說明本站收錄哪些民調、排除哪些、數字怎麼算、資料怎麼蒐集，以及出錯時怎麼更正。規則對所有政黨、候選人一體適用。草稿版，標「待填」處需由經營者確認。</p></div><svg class="hart" viewBox="0 0 360 240" role="img" aria-label="插圖：附檢核標記的方法文件"><defs><radialGradient id="hb-g"><stop offset="0" stop-color="#fdda5a" stop-opacity=".55"/><stop offset="1" stop-color="#fdda5a" stop-opacity="0"/></radialGradient></defs><circle cx="190" cy="112" r="118" fill="url(#hb-g)"/>
+<g transform="translate(96 18)"><rect class="dr" pathLength="1" width="142" height="186" rx="14" fill="#fff" stroke="#1d2127" stroke-width="1.8"/>
+<line x1="20" y1="26" x2="80" y2="26" stroke="#1d2127" stroke-width="6" stroke-linecap="round"/>
+<g stroke="#d6dae0" stroke-width="5" stroke-linecap="round"><line x1="20" y1="48" x2="122" y2="48"/><line x1="20" y1="64" x2="110" y2="64"/><line x1="20" y1="80" x2="118" y2="80"/></g>
+<g fill="none" stroke="#1d2127" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="100" width="12" height="12" rx="3"/><line x1="42" y1="106" x2="100" y2="106"/><rect x="20" y="124" width="12" height="12" rx="3"/><line x1="42" y1="130" x2="92" y2="130"/><rect x="20" y="148" width="12" height="12" rx="3"/><line x1="42" y1="154" x2="84" y2="154"/></g>
+<g fill="none" stroke="#1d2127" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22.5 106.2l2.6 2.6 4.6-5"/><path d="M22.5 130.2l2.6 2.6 4.6-5"/></g></g>
+<g transform="translate(262 150)"><path class="dr" pathLength="1" d="M0 -52 L42 -36 V0 C42 30 22 46 0 56 C-22 46 -42 30 -42 0 V-36 Z" fill="#fff7d6" stroke="#1d2127" stroke-width="1.8" stroke-linejoin="round"/><path d="M-14 2l10 10 20-22" fill="none" stroke="#1d2127" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(12 200) rotate(-20)"><rect width="104" height="24" rx="5" fill="#e4f9ff" stroke="#1d2127" stroke-width="1.8"/><g stroke="#1d2127" stroke-width="1.5"><line x1="12" y1="0" x2="12" y2="10"/><line x1="23" y1="0" x2="23" y2="6"/><line x1="34" y1="0" x2="34" y2="10"/><line x1="45" y1="0" x2="45" y2="6"/><line x1="56" y1="0" x2="56" y2="10"/><line x1="67" y1="0" x2="67" y2="6"/><line x1="78" y1="0" x2="78" y2="10"/><line x1="89" y1="0" x2="89" y2="6"/></g></g>
+<path d="M60 39l2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5z" fill="#7fb5ff"/><path d="M330 33l2.0 5.0 5.0 2.0-5.0 2.0-2.0 5.0-2.0-5.0-5.0-2.0 5.0-2.0z" fill="#fdda5a"/><circle cx="342" cy="210" r="4" fill="#9fe3d6"/></svg></div>
+  <div class="dis" id="dis"></div>
+  <h2>資料怎麼蒐集</h2>
+  <p class="lede">一份民調從被發現到出現在圖表上，要經過下面五步。每一步都以原始報告為準，轉述只當線索。</p>
+  <ol class="flow" id="flow-about"></ol>
+  <p class="meta">目前以上步驟由人工完成；下一階段會用新聞 RSS 與關鍵字自動找出候選民調，但核對與標示仍逐筆回到原文。</p>
+  <h2>每份民調的資料欄位</h2>
+  <p class="lede">選罷法要求公布民調時載明調查單位、時間、抽樣方式等，所以這些欄位本來就應該找得到。找不到的標「未載明」，並計入揭露完整度。</p>
+  <div class="scroll"><table class="stack"><thead><tr><th>欄位</th><th>說明</th></tr></thead><tbody>
+    <tr><td>類型</td><td>選舉／施政滿意度／議題</td></tr>
+    <tr><td>題目原文</td><td>議題與滿意度題必填，措辭不同不可直接比較</td></tr>
+    <tr><td>調查單位、執行公司、委託／經費</td><td>三者常不同，例如「戴立安委託、畢肯市場研究執行」</td></tr>
+    <tr><td>調查期間、發布日期</td><td>趨勢圖以調查期間為準</td></tr>
+    <tr><td>方式</td><td>市話／市話＋手機／網路問卷</td></tr>
+    <tr><td>樣本數、抽樣誤差</td><td>網路問卷通常沒有抽樣誤差</td></tr>
+    <tr><td>結果與未表態比例</td><td>未表態一定要留，否則各家看起來差很多</td></tr>
+    <tr><td>來源連結</td><td>原始發布處優先，轉載媒體列為次要</td></tr>
+  </tbody></table></div>
+  <h2>政黨與意見的顏色</h2>
+  <p class="lede">政黨色依各黨慣用色調整明暗，讓色弱讀者也分得開；文字標籤另用加深的版本，確保看得清楚。不在清單上的小黨一律歸入「其他政黨」灰色。</p>
+  <div class="swgrid" id="swatches"></div>
+  <h2>本頁資料來源</h2>
+  <ul id="srclist" class="meta" style="font-size:14px"></ul>
+  <p class="meta" style="margin-top:20px">發布日期：待填・最後更新：2026/11/20</p>
+</section>
+</main>
+<footer><div class="wrap">民調看板 原型 · 數字皆引自公開報導與民調單位發布內容，連結列於「揭露聲明與方法」。封關期間（11/18 00:00 至 11/28 16:00）本站不含任何選舉民調資料。</div></footer>
+<div class="tip" id="tip"></div>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const tip=$('#tip');
+const showTip=(e,html)=>{tip.innerHTML=html;tip.style.opacity=1;const x=Math.min(e.clientX+14,innerWidth-270);tip.style.left=x+'px';tip.style.top=(e.clientY+14)+'px'};
+const hideTip=()=>{tip.style.opacity=0};
+
+/* ---------- 封關 ---------- */
+const BLACKOUT={name:'2026 九合一選舉',start:Date.UTC(2026,10,17,16,0),end:Date.UTC(2026,10,28,8,0)};
+const inBlackout=()=>{const t=Date.now();return t>=BLACKOUT.start&&t<BLACKOUT.end};
+let preview=false;
+
+/* ---------- 施政滿意度資料 ---------- */
+const ORG={mf:'美麗島電子報',tw:'台灣民心調查',zm:'震傳媒',ud:'聯合報',tv:'TVBS'};
+const APP=[
+ {k:'mf',lab:'1 月',url:'https://www.my-formosa.com.tw/DOC_223441.htm',d:'01-27',n:1075,moe:3.0,sat:[46.0,48.0],trust:[46.9,43.3]},
+ {k:'mf',lab:'3 月',url:'https://www.my-formosa.com.tw/DOC_224706.htm',d:'03-27',n:1076,moe:3.0,sat:[43.8,47.4],trust:[47.1,42.8]},
+ {k:'mf',lab:'4 月',url:'https://www.my-formosa.com.tw/DOC_225352.htm',d:'04-23',n:1074,moe:3.0,sat:[44.5,47.5],trust:[46.2,43.8]},
+ {k:'mf',lab:'5 月',url:'https://www.my-formosa.com.tw/DOC_226123.htm',d:'05-21',n:1078,moe:3.0,sat:[45.7,44.9],trust:[45.2,41.2]},
+ {k:'mf',lab:'6 月',url:'https://www.my-formosa.com.tw/DOC_226926.htm',d:'06-23',n:1078,moe:3.0,sat:[44.0,47.6],trust:[44.8,43.5]},
+ {k:'mf',lab:'7 月',url:'https://www.my-formosa.com.tw/DOC_227893.htm',d:'07-29',n:1200,sat:[44.7,47.4],trust:[45.4,42.6]},
+ {k:'mf',lab:'8 月',url:'https://www.my-formosa.com.tw/DOC_228773.htm',d:'08-25',n:1632,moe:2.43,sat:[46.4,43.9],trust:[47.0,40.7]},
+ {k:'mf',lab:'9 月',url:'https://www.my-formosa.com.tw/DOC_229724.htm',d:'10-01',n:1201,moe:2.83,sat:[47.9,41.4],trust:[48.3,38.6]},
+ {k:'mf',lab:'10 月',url:'https://www.my-formosa.com.tw/DOC_230543.htm',d:'10-28',moe:2.82,sat:[50.1,40.7],trust:[51.7,37.8]},
+ {k:'tw',lab:'8 月',url:'https://www.businesstoday.com.tw/article/category/183027/post/202608250012/',d:'08-20',moe:3.0,sat:[51.4,42.3],trust:[49.9,39.5]},
+ {k:'tw',lab:'9 月',url:'https://www.mirrormedia.mg/external/setn_1914401',d:'09-22',moe:3.0,sat:[51.4,41.1],trust:[51.2,35.7]},
+ {k:'tw',lab:'10 月',url:'https://www.mirrormedia.mg/external/setn_1929202',d:'10-21',moe:3.0,sat:[52.2,37.6],trust:[53.0,35.4]},
+ {k:'zm',lab:'2 月',url:'https://www.zmedia.com.tw/Document/PoolDetail/40607',d:'02-08',n:1069,moe:3.0,sat:[45.5,41.5],trust:[48.4,39.3]},
+ {k:'zm',lab:'3 月',url:'https://www.zmedia.com.tw/Document/PoolDetail/41390',d:'03-28',sat:[43.8,44.0],trust:[49.2,40.3]},
+ {k:'zm',lab:'4 月',url:'https://www.zmedia.com.tw/Document/PoolDetail/41742',d:'04-20',sat:[45.3,43.8],trust:[45.2,41.5]},
+ {k:'zm',lab:'5 月',url:'https://www.zmedia.com.tw/Document/PoolDetail/42360',d:'05-25',sat:[47.7,40.0],trust:[49.9,36.8]},
+ {k:'zm',lab:'8 月',url:'https://www.zmedia.com.tw/Document/PoolDetail/43759',d:'08-16',moe:3.0,sat:[46.9,42.3],trust:[48.5,39.0]},
+ {k:'ud',lab:'執政兩周年',url:'https://newtalk.tw/news/view/2026-06-01/1038625',d:'05-24',int:1,sat:[41,50]},
+ {k:'tv',lab:'就職兩周年',url:'https://cc.tvbs.com.tw/portal/file/poll_center/2026/20260519/24d5919dc3404ae7a5801c64c13dcf5e.pdf',d:'05-07',n:1138,moe:2.9,int:1,sat:[38,45],trust:[44,48]},
+ {k:'tv',lab:'9 月',url:'https://tw.news.yahoo.com/tvbs%E6%B0%91%E8%AA%BF-%E8%B3%B4%E6%B8%85%E5%BE%B7%E6%89%93%E5%8B%95%E4%B8%8D%E4%BA%86%E4%BB%96%E5%80%91%E7%9A%84%E5%BF%83-%E4%B8%AD%E9%96%93%E9%81%B8%E6%B0%91-23-%E6%BB%BF%E6%84%8F44-162642266.html',d:'09-01',n:1296,int:1,sat:[39,38]}
+];
+const doy=md=>{const [m,d]=md.split(/[-/]/).map(Number);return Math.round((Date.UTC(2026,m-1,d)-Date.UTC(2026,0,1))/864e5)};
+const moeOf=p=>p.m==='網路問卷'?null:p.moe?[p.moe,'公布']:p.n?[+(196*Math.sqrt(.25/p.n)).toFixed(2),'依樣本數推算']:null;
+const GAP=75,segs=(arr,key)=>{const out=[];let cur=[];arr.forEach((p,i)=>{if(cur.length&&key(p)-key(arr[i-1])>GAP){out.push(cur);cur=[]}cur.push(p)});if(cur.length)out.push(cur);return out};
+/* ---------- 圖表共用：平滑曲線、適應式平均、小圖面板 ---------- */
+function monoSegs(P){const n=P.length;if(n<2)return [];const dx=[],m=[],t=[];
+ for(let i=0;i<n-1;i++){dx[i]=Math.max(.01,P[i+1][0]-P[i][0]);m[i]=(P[i+1][1]-P[i][1])/dx[i]}
+ t[0]=m[0];t[n-1]=m[n-2];for(let i=1;i<n-1;i++)t[i]=m[i-1]*m[i]<=0?0:3*(dx[i-1]+dx[i])/((2*dx[i]+dx[i-1])/m[i-1]+(dx[i]+2*dx[i-1])/m[i]);
+ const r=v=>v.toFixed(1),out=[];for(let i=0;i<n-1;i++){const h=dx[i]/3;out.push(`M${r(P[i][0])},${r(P[i][1])}C${r(P[i][0]+h)},${r(P[i][1]+h*t[i])} ${r(P[i+1][0]-h)},${r(P[i+1][1]-h*t[i+1])} ${r(P[i+1][0])},${r(P[i+1][1])}`)}return out}
+const mono=P=>monoSegs(P).map((s,i)=>i?s.replace(/^M[^C]+/,''):s).join('');
+function akernel(pts,t,hmin){const ds=pts.map(([x])=>Math.abs(t-x)).sort((a,b)=>a-b),h=Math.max(hmin,(ds[Math.min(2,ds.length-1)]||0)*.9);
+ let sw=0,sv=0;for(const [x,v] of pts){const w=Math.exp(-.5*((t-x)/h)**2);sw+=w;sv+=w*v}const mu=sv/sw;let ss=0;for(const [x,v] of pts){const w=Math.exp(-.5*((t-x)/h)**2);ss+=w*(v-mu)**2}
+ return {mu,sd:Math.sqrt(ss/sw),h}}
+function avgLine(pts,hmin,t0,t1){const out=[];for(let t=t0;t<=t1;t+=3){const k=akernel(pts,t,hmin);out.push([t,k.mu,Math.max(1.2,k.sd)*Math.min(1.8,Math.sqrt(k.h/hmin))])}const k=akernel(pts,t1,hmin);out.push([t1,k.mu,Math.max(1.2,k.sd)*Math.min(1.8,Math.sqrt(k.h/hmin))]);return out}
+function panel(svg,o){
+ const W=svg.clientWidth,H=svg.clientHeight;if(!W||!H)return;
+ const m={l:30,r:o.endR||48,t:12,b:26},x=t=>m.l+(t-o.t0)/(o.t1-o.t0)*(W-m.l-m.r),y=v=>m.t+(o.y1-v)/(o.y1-o.y0)*(H-m.t-m.b);
+ let g='';
+ for(let v=o.y0;v<=o.y1;v+=o.step)g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text x="${m.l-7}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="var(--ink3)">${v}</text>`;
+ if(o.ref!=null)g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${y(o.ref)}" y2="${y(o.ref)}" stroke="#9aa3ae" stroke-dasharray="3 4"/>`;
+ const mos=[];for(let mo=1;mo<=12;mo++){const t=doy(mo+'-15');if(t>=o.t0&&t<=o.t1)mos.push(mo)}
+ const every=(W-m.l-m.r)/Math.max(1,mos.length)<40?2:1;
+ mos.forEach((mo,i)=>{if((mos.length-1-i)%every)return;g+=`<text x="${x(doy(mo+'-15'))}" y="${H-7}" text-anchor="middle" font-size="12" fill="var(--ink3)">${mo}月</text>`});
+ g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${H-m.b}" y2="${H-m.b}" stroke="#dde2e9"/>`;
+ const ends=[];
+ (o.avg||[]).forEach(a=>{if(a.line.length<2)return;const up=a.line.map(([t,mu,sd])=>x(t).toFixed(1)+','+y(mu+sd).toFixed(1)),dn=a.line.map(([t,mu,sd])=>x(t).toFixed(1)+','+y(mu-sd).toFixed(1)).reverse();
+  g+=`<path d="M${up.join('L')}L${dn.join('L')}Z" fill="${a.c}" opacity=".1"/><path d="${mono(a.line.map(([t,mu])=>[x(t),y(mu)]))}" fill="none" stroke="${a.c}" stroke-width="3" stroke-linecap="round"/>`;
+  const L=a.line[a.line.length-1];ends.push({x:x(L[0]),y:y(L[1]),t:(a.name?a.name+' ':'')+L[1].toFixed(1),c:a.t})});
+ o.series.forEach(s=>{const P=s.pts.map(q=>[x(q.t),y(q.v)]);
+  if(!o.dotsOnly&&P.length>1)monoSegs(P).forEach((d,i)=>{const gap=s.pts[i+1].t-s.pts[i].t>GAP;g+=`<path d="${d}" fill="none" stroke="${s.c}" stroke-width="${gap?2:2.4}" stroke-linecap="round" opacity="${gap?.3:1}"/>`});
+  s.pts.forEach((q,i)=>{const [px,py]=P[i];if(o.moe&&q.e)g+=`<line x1="${px}" x2="${px}" y1="${y(q.v+q.e)}" y2="${y(q.v-q.e)}" stroke="${s.c}" stroke-width="1.6" opacity=".22" stroke-linecap="round"/>`;
+   g+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${o.dotsOnly?3:3.4}" fill="${q.hollow?'#fff':s.c}" stroke="${q.hollow?s.c:'#fff'}" stroke-width="${q.hollow?1.6:1.3}" opacity="${o.dotsOnly?.4:1}"/>`});
+  if(!o.dotsOnly&&P.length){const L=s.pts[s.pts.length-1];ends.push({x:P[P.length-1][0],y:P[P.length-1][1],t:(o.endName?s.name+' ':'')+(s.f?s.f(L.v):L.v.toFixed(1)),c:s.t})}});
+ ends.sort((a,b)=>a.y-b.y);for(let i=1;i<ends.length;i++)if(ends[i].y-ends[i-1].y<15)ends[i].y=ends[i-1].y+15;
+ ends.forEach(L=>g+=`<text x="${(L.x+8).toFixed(1)}" y="${(L.y+4).toFixed(1)}" font-size="12.5" font-weight="700" fill="${L.c}" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">${L.t}</text>`);
+ g+=`<line class="gd" x1="0" x2="0" y1="${m.t}" y2="${H-m.b}" stroke="#1d2127" stroke-width="1" opacity="0"/><g class="hv"></g><rect class="ov" x="${m.l}" y="${m.t}" width="${W-m.l-m.r+20}" height="${H-m.t-m.b}" fill="transparent"/>`;
+ svg.innerHTML=g;
+ const allT=[...new Set(o.series.flatMap(s=>s.pts.map(q=>q.t)))].sort((a,b)=>a-b),gd=svg.querySelector('.gd'),hv=svg.querySelector('.hv'),ov=svg.querySelector('.ov');
+ const move=ev=>{const pt=ev.touches?ev.touches[0]:ev,r=svg.getBoundingClientRect(),px=pt.clientX-r.left;let best=null,bd=1e9;allT.forEach(t=>{const d=Math.abs(x(t)-px);if(d<bd){bd=d;best=t}});if(best==null)return;
+  gd.setAttribute('x1',x(best));gd.setAttribute('x2',x(best));gd.setAttribute('opacity','.22');
+  const hits=o.series.map(s=>({s,q:s.pts.find(q=>q.t===best)})).filter(h=>h.q);
+  hv.innerHTML=hits.map(h=>`<circle cx="${x(best)}" cy="${y(h.q.v)}" r="5.5" fill="${h.q.hollow?'#fff':h.s.c}" stroke="${h.q.hollow?h.s.c:'#fff'}" stroke-width="2"/>`).join('');
+  showTip(pt,o.tip(hits))};
+ ov.addEventListener('mousemove',move);ov.addEventListener('touchstart',move,{passive:true});ov.addEventListener('mouseleave',()=>{gd.setAttribute('opacity',0);hv.innerHTML='';hideTip()});
+}
+
+function kernel(pts,t,h){let sw=0,sv=0;for(const [x,v] of pts){const w=Math.exp(-.5*((t-x)/h)**2);sw+=w;sv+=w*v}return sw<.6?null:sv/sw}
+function highlight(svg,k){svg.querySelectorAll('.pt').forEach(e=>e.style.opacity=(k==null||e.dataset.k===k)?'':'.12');svg.querySelectorAll('.hl').forEach(e=>e.style.opacity=(k!=null&&e.dataset.k===k)?'1':'0');svg.querySelectorAll('.tr').forEach(e=>e.style.opacity=k==null?'':'.25')}
+const LATEST=[
+ {k:'mf',who:'美麗島電子報 10 月國政民調',sat:[50.1,40.7],trust:[51.7,37.8],meta:'調查 10/27–10/29 · 市話 720＋手機 484，共 1,204 人 · 誤差 ±2.82% · 美麗島電子報出資，趨勢民意調查公司執行',url:'https://www.my-formosa.com.tw/DOC_230543.htm'},
+ {k:'tw',who:'台灣民心調查 10 月',sat:[52.2,37.6],trust:[53.0,35.4],meta:'調查 10/20–10/22 · 電話訪問 1,075 人 · 誤差 ±3.0% · 戴立安委託，畢肯市場研究公司執行',url:'https://www.mirrormedia.mg/external/setn_1929202'}
+];
+LATEST.push({k:'zm',who:'震傳媒 8 月（全國）',sat:[46.9,42.3],trust:[48.5,39.0],meta:'調查 8/15–8/17 · 市話＋手機 · 震傳媒出資，山水民意執行；9、10 月只做新北、台北單一城市',url:'https://www.zmedia.com.tw/Document/PoolDetail/43759'});
+const PREMIER=[
+ {who:'美麗島電子報',v:[44.2,15.8,40.0],url:'https://www.my-formosa.com.tw/DOC_230543.htm'},
+ {who:'台灣民心調查',v:[47.7,18.6,33.7],url:'https://www.mirrormedia.mg/external/amp/setn_1929202'}
+];
+let metric='sat',tmode='each';
+const MON=['','1月','2月','3月','4月','5月','6月','7月','8月','9月','10月'];
+
+let trendKey='';
+function drawTrend(force){
+ const box=$('#trend'),W=box.clientWidth;if(!W)return;const key=W+metric+tmode;if(!force&&key===trendKey)return;trendKey=key;
+ const lab=metric==='sat'?['滿意','不滿意']:['信任','不信任'],C=[['var(--pos)','#6b3fc0'],['var(--neg)','#c23b33']];
+ const ps=APP.filter(p=>p[metric]),ds=ps.map(p=>doy(p.d)),t0=Math.min(...ds)-8,t1=Math.max(...ds)+8;
+ const NM={mf:'美麗島電子報',tw:'台灣民心調查',zm:'震傳媒'};
+ const tip=hits=>{const p=hits[0].q.p,e=moeOf(p),f=v=>p.int?v:v.toFixed(1);return `<b>${ORG[p.k]}・${p.lab}</b><br>${lab[0]} ${f(p[metric][0])}%・${lab[1]} ${f(p[metric][1])}%<br>${e?`誤差 ±${e[0]}（${e[1]}）`:'誤差未公布'}${p.est?'<br>調查日期未公開，依公布日往前推估':''}`};
+ if(tmode==='each'){
+  const ks=['mf','tw','zm'].filter(k=>ps.some(p=>p.k===k));
+  box.innerHTML=`<div class="sm3">${ks.map(k=>`<div class="smp"><div class="smh"><b>${NM[k]}</b><span>${ps.filter(p=>p.k===k).length} 期</span></div><div class="fig sm"><svg data-k="${k}" aria-label="${NM[k]}${lab[0]}與${lab[1]}走勢"></svg></div></div>`).join('')}</div>`;
+  box.querySelectorAll('svg').forEach(svg=>{const q=ps.filter(p=>p.k===svg.dataset.k).sort((a,b)=>doy(a.d)-doy(b.d));
+   panel(svg,{t0,t1,y0:30,y1:60,step:10,ref:50,moe:1,endR:40,tip,series:[0,1].map(i=>({name:lab[i],c:C[i][0],t:C[i][1],f:v=>v.toFixed(1),pts:q.map(p=>{const e=moeOf(p);return {t:doy(p.d),v:p[metric][i],e:e?e[0]:0,p}})}))})});
+ }else{
+  box.innerHTML=`<div class="fig one"><svg aria-label="${lab[0]}與${lab[1]}綜合參考線"></svg></div>`;
+  const svg=box.querySelector('svg'),a0=Math.min(...ds),a1=Math.max(...ds);
+  panel(svg,{t0,t1,y0:30,y1:60,step:10,ref:50,dotsOnly:1,endR:88,tip:hits=>hits.map(h=>{const p=h.q.p;return `<b>${ORG[p.k]}・${p.lab}</b> ${h.s.name} ${p.int?h.q.v:h.q.v.toFixed(1)}%`}).join('<br>'),
+   series:[0,1].map(i=>({name:lab[i],c:C[i][0],t:C[i][1],pts:ps.map(p=>({t:doy(p.d),v:p[metric][i],p})).sort((a,b)=>a.t-b.t)})),
+   avg:[0,1].map(i=>({name:lab[i],c:C[i][0],t:C[i][1],line:avgLine(ps.map(p=>[doy(p.d),p[metric][i]]),25,a0,a1)}))});
+ }
+}
+const TDASH={mf:'',tw:'7 4',zm:'2 4',ud:'',tv:''};
+function trendText(){
+ const lab=metric==='sat'?['滿意','不滿意']:['信任','不信任'];
+ $('#tlegend').innerHTML=`<span><i class="ld" style="background:var(--pos)"></i>${lab[0]}</span><span><i class="ld" style="background:var(--neg)"></i>${lab[1]}</span>`+(tmode==='each'?'<span class="lg2">每格一家機構・三格刻度相同・直線為誤差範圍</span>':'<span class="lg2">淡點為單份民調・粗線為綜合參考線・色帶為各家分歧程度</span>');
+ $('#tnote').innerHTML=tmode==='each'?'每家機構一格、各自一條線，不混成平均；三格用同一個刻度，可以直接比較高低。顏色較淡的線段，表示前後兩期相隔超過兩個半月，中間沒有調查。聯合報（執政兩周年：滿意 41%、不滿意 50%）和 TVBS（5 月 38%／45%、9 月 39%／38%）今年只有一兩期，不另畫一格，列在下方總表。美麗島 2 月因春節停做；7 月起換成張佑宗設計、趨勢民調執行，前後可能有機構差異。滑鼠移到圖上，可看同一期的數字。':'<b>綜合參考線</b>把各家每份民調以調查日期為中心做高斯加權平均（至少 25 天寬，民調較少的時段自動放寬，色帶也跟著變寬），每份權重相同，<b>未校正各機構的系統性差異</b>，只用來看大方向，不是任何一家的結果，也不是預測。';
+}
+document.querySelectorAll('[data-tmode]').forEach(b=>b.addEventListener('click',()=>{tmode=b.dataset.tmode;document.querySelectorAll('[data-tmode]').forEach(x=>x.setAttribute('aria-pressed',x===b));trendText();drawTrend(true)}));
+trendText();
+const trendRO=new ResizeObserver(()=>drawTrend());trendRO.observe($('#trend'));
+
+function renderLatest(){
+ const lab=metric==='sat'?['滿意','不滿意']:['信任','不信任'];
+ $('#latest').innerHTML=LATEST.map(L=>`<div class="card"><h3>${L.who}</h3>
+  <div class="kv"><div><span class="big num">${L[metric][0].toFixed(1)}%</span><span>${lab[0]}</span></div><div><span class="big num" style="color:var(--ink2)">${L[metric][1].toFixed(1)}%</span><span>${lab[1]}</span></div></div>
+  <div class="meta">${L.meta} · <a href="${L.url}">來源</a></div></div>`).join('');
+ renderATab();
+}
+const f1=v=>v.toFixed(1);
+const stack=(v,lab)=>`<div class="bar" role="img" aria-label="${lab[0]} ${f1(v[0])}%，未表態 ${f1(v[1])}%，${lab[1]} ${f1(v[2])}%"><span class="p num" style="flex:${v[0]}">${f1(v[0])}%</span><span class="m num" style="flex:${v[1]}">${v[1]>=8?f1(v[1])+'%':''}</span><span class="n num" style="flex:${v[2]}">${f1(v[2])}%</span></div>`;
+$('#premier').innerHTML=PREMIER.map(p=>`<div class="irow"><div>${p.who}</div>${stack(p.v,['滿意','不滿意'])}<div class="chg"><a href="${p.url}">來源</a></div></div>`).join('')+`<p class="meta">紫色為滿意、灰色為未明確回答、紅色為不滿意。</p>`;
+document.querySelectorAll('[data-metric]').forEach(b=>b.addEventListener('click',()=>{metric=b.dataset.metric;document.querySelectorAll('[data-metric]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawTrend(true);renderLatest();trendText()}));
+/* ---------- 共用：全部民調表（施政、政黨） ---------- */
+const fmtD=md=>{const [m,d]=md.split(/[-/]/).map(Number);return m+'/'+d};
+const TS={app:{open:new Set(),mo:null,mon:'all'},ps:{open:new Set(),mo:null,mon:'all'}},TRENDER={};
+const xbtn=lab=>`<td class="x hs"><button class="xb" aria-label="展開${lab}"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td>`;
+function ptable(key,{rows,monOf,monLab,head,cells,detail,ncol,gsum,lab}){
+ const st=TS[key],mons=[...new Set(rows.map(monOf))].sort((a,b)=>b-a);
+ if(st.mon!=='all'&&!mons.includes(+st.mon))st.mon='all';
+ if(!st.mo)st.mo=new Set(rows.length<=12?mons:[mons[0]]);
+ const list=st.mon==='all'?rows:rows.filter(p=>monOf(p)===+st.mon);
+ const row=p=>{const i=rows.indexOf(p),op=st.open.has(i);return `<tr class="er${op?' on':''}" data-i="${i}">${cells(p)}${xbtn(lab(p))}</tr><tr class="ed"${op?'':' hidden'}><td colspan="${ncol}">${detail(p)}</td></tr>`};
+ const body=st.mon!=='all'?`<tbody>${list.map(row).join('')}</tbody>`:mons.map(m=>{const a=rows.filter(p=>monOf(p)===m),op=st.mo.has(m);
+  return `<tbody class="mg${op?'':' shut'}" data-m="${m}"><tr class="mh"><th colspan="${ncol}"><button aria-expanded="${op}"><span class="mt1">${monLab(m)}</span><span class="meta">${a.length} 份${gsum?'・'+gsum(a):''}</span><span class="tgl">${op?'收起':'展開'}</span></button></th></tr>${a.map(row).join('')}</tbody>`}).join('');
+ const chips=`<button class="chip" data-tm="all" aria-pressed="${st.mon==='all'}">全部<span class="cn">${rows.length}</span></button>`+mons.map(m=>`<button class="chip" data-tm="${m}" aria-pressed="${st.mon===String(m)}">${monLab(m)}<span class="cn">${rows.filter(p=>monOf(p)===m).length}</span></button>`).join('');
+ return {chips,table:`<div class="etw"><table class="et pt" data-key="${key}">${head}${body}</table></div>`};
+}
+document.addEventListener('click',e=>{
+ const c=e.target.closest('[data-tm]');if(c){const key=c.closest('[data-tkey]').dataset.tkey,st=TS[key];st.mon=c.dataset.tm;if(st.mon!=='all')st.mo.add(+st.mon);TRENDER[key]();return}
+ const t=e.target.closest('table.pt');if(!t)return;const st=TS[t.dataset.key];
+ const mh=e.target.closest('.mh button');if(mh){const tb=mh.closest('tbody'),m=+tb.dataset.m,op=tb.classList.toggle('shut')===false;op?st.mo.add(m):st.mo.delete(m);mh.setAttribute('aria-expanded',op);mh.querySelector('.tgl').textContent=op?'收起':'展開';return}
+ const tr=e.target.closest('tr.er');if(tr&&!e.target.closest('a')){const i=+tr.dataset.i,on=!st.open.has(i);on?st.open.add(i):st.open.delete(i);tr.classList.toggle('on',on);tr.querySelector('.xb').setAttribute('aria-expanded',on);tr.nextElementSibling.hidden=!on}
+});
+const mvs2=(a,b,cA,cB,tA,tB,f,lab)=>{const rest=Math.max(0,100-a-b);return `<div class="mvs" role="img" aria-label="${lab[0]} ${f(a)}%，未表態 ${rest.toFixed(1)}%，${lab[1]} ${f(b)}%"><b class="na num${a>b?' hi':''}" style="color:${tA}">${f(a)}</b><span class="mbar"><i style="flex:${a};background:${cA}"></i><i class="mr" style="flex:${rest}"></i><i style="flex:${b};background:${cB}"></i><em></em></span><b class="nb num${b>a?' hi':''}" style="color:${tB}">${f(b)}</b></div>`};
+const leadChip=(name,c,d)=>d?`<span class="lead" style="--c:${c}"><span class="ln">${name} </span>+${d}</span>`:'<span class="lead tie">平手</span>';
+
+/* 施政滿意度表 */
+const SHORT={mf:'美麗島',tw:'台灣民心',zm:'震傳媒',ud:'聯合報',tv:'TVBS'};
+const amo=p=>{const m=/^(\d+)\s*月/.exec(p.lab);return m?+m[1]:+p.d.split('-')[0]};
+function renderATab(){
+ const lab=metric==='sat'?['滿意','不滿意']:['信任','不信任'],rows=APP.filter(p=>p[metric]).sort((a,b)=>doy(b.d)-doy(a.d)),skip=APP.length-rows.length;
+ const f=p=>v=>p.int?String(v):v.toFixed(1);
+ const dd=p=>(p.est?'約 ':'')+fmtD(p.d)+(p.est?'（推估）':'');
+ const {chips,table}=ptable('app',{rows,monOf:amo,monLab:m=>m+' 月',ncol:6,lab:p=>ORG[p.k]+p.lab,
+  gsum:a=>`${lab[0]}較多 ${a.filter(p=>p[metric][0]>p[metric][1]).length} 份`,
+  head:`<thead><tr><th>機構・期別</th><th class="hs">調查結束日</th><th class="hs nn">樣本</th><th class="vsh"><span><i class="cd" style="background:var(--pos)"></i>${lab[0]}</span><span class="mid">%・灰色為未表態</span><span>${lab[1]}<i class="cd" style="background:var(--neg);margin:0 0 0 5px"></i></span></th><th>差距</th><th class="hs"><span class="sr">展開</span></th></tr></thead>`,
+  cells:p=>{const v=p[metric],d=v[0]-v[1],ad=p.int?Math.abs(d):Math.abs(d).toFixed(1);
+   return `<td class="o"><b>${ORG[p.k]}</b> <span class="meta">${p.lab}</span><span class="od">調查至 ${dd(p)}</span>${p.est?'<span class="tg sec">日期推估</span>':''}</td><td class="d hs">${dd(p)}</td><td class="hs nn num">${p.n?p.n.toLocaleString():'—'}</td><td class="vsc">${mvs2(v[0],v[1],'var(--pos)','var(--neg)','#6b3fc0','#c23b33',f(p),lab)}</td><td class="g">${leadChip(d>0?lab[0]:lab[1],d>0?'var(--pos)':'var(--neg)',+ad?ad:0)}</td>`},
+  detail:p=>{const e=moeOf(p),bars=[['執政滿意度',p.sat,['滿意','不滿意']],['信任度',p.trust,['信任','不信任']]].filter(x=>x[1]);
+   return `<div class="edin"><div>${bars.map(([t,v,l])=>`<div class="irow"><div>${t}</div>${stack([v[0],Math.max(0,100-v[0]-v[1]),v[1]],l)}<div></div></div>`).join('')}<p class="meta" style="margin:4px 0 0">紫色為正面、灰色為未表態、紅色為負面。</p></div>
+   <div><dl class="edl"><dt>機構</dt><dd>${ORG[p.k]}</dd><dt>期別</dt><dd>${p.lab}</dd><dt>調查結束日</dt><dd>${dd(p)}</dd><dt>有效樣本</dt><dd>${p.n?p.n.toLocaleString()+' 人':'未載明'}</dd><dt>抽樣誤差</dt><dd>${e?`±${e[0]}（${e[1]}）`:'未公布'}</dd></dl>
+   <div class="edlk">${p.url?`<a href="${p.url}">原始出處</a>`:'<span class="meta">這一期的出處連結待補</span>'}</div></div></div>`}});
+ $('#appmon').innerHTML=chips;$('#atab').innerHTML=table;
+ $('#anote').innerHTML=`依調查結束日由新到舊排列，數字為${lab[0]}與${lab[1]}的比例（%）。點任一列，可看滿意度與信任度兩組長條和調查方法。${skip?`另有 ${skip} 期沒有問${metric==='sat'?'滿意度':'信任度'}，不列入。`:''}`;
+}
+TRENDER.app=renderATab;
+
+renderLatest();
+
+/* ---------- 選舉資料 ---------- */
+const P={DPP:{n:'民進黨',c:'var(--dpp)',t:'var(--dpp-t)'},KMT:{n:'國民黨',c:'var(--kmt)',t:'var(--kmt-t)'},TPP:{n:'台灣民眾黨',c:'var(--tpp)',t:'var(--tpp-t)'},PFP:{n:'親民黨',c:'var(--pfp)',t:'var(--pfp-t)'},NPP:{n:'時代力量',c:'var(--npp)',t:'var(--npp-t)'},IND:{n:'無黨籍',c:'var(--ind)',t:'var(--ind-t)'}};
+const RACES=[
+ {id:'taipei',name:'台北市',c:[['沈伯洋','DPP'],['蔣萬安','KMT']],polls:[]},
+ {id:'newtaipei',name:'新北市',c:[['蘇巧慧','DPP'],['李四川','KMT']],polls:[]},
+ {id:'taoyuan',name:'桃園市',c:[['黃世杰','DPP'],['張善政','KMT']],polls:[]},
+ {id:'taichung',name:'台中市',c:[['何欣純','DPP'],['江啟臣','KMT']],polls:[]},
+ {id:'tainan',name:'台南市',c:[['陳亭妃','DPP'],['謝龍介','KMT']],polls:[]},
+ {id:'kaohsiung',name:'高雄市',c:[['賴瑞隆','DPP'],['柯志恩','KMT']],polls:[]}
+];
+let race=RACES[0],emon='all',eall=false,eorg=null,emOpen=null,eopen=new Set();
+function renderLock(){
+ const open=!inBlackout()||preview;
+ $('#ebody').hidden=!open;
+ if(open){$('#elock').innerHTML='';return}
+ const left=BLACKOUT.end-Date.now(),dd=Math.floor(left/864e5),hh=Math.floor(left%864e5/36e5);
+ $('#elock').innerHTML=`<div class="lock"><h1>選舉民調封關中，${BLACKOUT.name}投票結束後恢復顯示</h1>
+  <p>依《公職人員選舉罷免法》，投票日前 10 日起至投票截止，任何人不得發布、報導、散布、評論或引述選舉民調，違者最高罰 200 萬元。本站在封關期間自動隱藏這一區。</p>
+  <div class="meta">距離 11/28 16:00 恢復（屆時更新網站後顯示）</div><div class="cd num">${dd} 天 ${hh} 小時</div>
+  <p class="meta">施政滿意度與政黨支持度不在封關範圍，照常顯示。</p></div>`;
+}
+
+const etlSvg=$('#etl svg');
+function drawTimeline(){
+ const s=etlSvg,W=s.clientWidth,H=s.clientHeight;if(!W||$('#ebody').hidden)return;
+ const narrow=W<520,m={l:34,r:narrow?60:90,t:16,b:30};
+ const span=d=>d.split('–').map(doy);
+ const dated=race.polls.filter(p=>p.d),und=race.polls.length-dated.length;
+ $('#etlnote').innerHTML=(dated.length?'每份民調依調查期間中點排列，直線為誤差範圍（公布值，或依樣本數推算）；空心點為網路問卷，非隨機抽樣；紅框點為政黨或候選人陣營委託的民調。滑過任一點，會連起同一家機構的歷次結果。':'')+(und?` 另有 <b>${und}</b> 份民調沒有載明調查日期，無法放上時間軸，請見下方明細。`:'');
+ if(!dated.length){s.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="15" fill="var(--ink2)">這場選舉的公開民調都沒有載明調查日期，無法依時間排列</text>`;return}
+ const mids=dated.map(p=>{const [a,b]=span(p.d);return (a+b)/2}),vote=doy('11-28'),bo=doy('11-18');
+ const first=Math.min(...mids)-6,fm=new Date(Date.UTC(2026,0,1)+first*864e5).getUTCMonth()+1,t0=doy(fm+'-01')-2,t1=vote+3;
+ const vs=dated.flatMap(p=>p.v),lo=Math.max(0,Math.floor((Math.min(...vs)-8)/5)*5),hi=Math.min(80,Math.ceil((Math.max(...vs)+8)/5)*5);
+ const x=t=>m.l+(t-t0)/(t1-t0)*(W-m.l-m.r), y=v=>m.t+(hi-v)/(hi-lo)*(H-m.t-m.b);
+ let g=`<rect x="${x(bo)}" y="${m.t}" width="${x(vote)-x(bo)}" height="${H-m.t-m.b}" fill="#fff3c4" opacity=".7"/><text x="${(x(bo)+x(vote))/2}" y="${m.t+14}" text-anchor="middle" font-size="12" fill="#8a6d00">封關</text>`;
+ for(let v=lo;v<=hi;v+=5)if(v%10===0||hi-lo<=20)g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text x="${m.l-6}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="var(--ink3)">${v}%</text>`;
+ g+=`<line x1="${x(vote)}" x2="${x(vote)}" y1="${m.t}" y2="${H-m.b}" stroke="var(--ink)" stroke-width="1.5"/><text x="${x(vote)+6}" y="${H-m.b-4}" font-size="12" fill="var(--ink)">投票日</text>`;
+ for(let mo=1;mo<=12;mo++){const t=doy(mo+'-01');if(t<t0||t>t1)continue;g+=`<text x="${x(t)}" y="${H-8}" text-anchor="middle" font-size="12" fill="var(--ink3)">${mo}月</text>`}
+ // 參考趨勢：電話民調（排除陣營委託、網路問卷）≥6 份、≥3 家才畫
+ const elig=dated.filter(p=>!p.pc&&p.m!=='網路問卷'),eligMid=elig.map(p=>mids[dated.indexOf(p)]);
+ const okTrend=elig.length>=6&&new Set(elig.map(p=>p.who.replace(/（.*$/,''))).size>=3;
+ race._trend=okTrend;
+ const tEnd=[],nSeg=[];
+ if(okTrend){const a0=Math.min(...eligMid),a1=Math.min(Math.max(...eligMid),bo);
+  race.c.forEach(([n,pt],i)=>{const c=P[pt].c,pts=elig.map((p,j)=>[eligMid[j],p.v[i]]);let up=[],dn=[],ln=[],segs=[];
+   const flush=()=>{if(ln.length>1)segs.push([ln,up,dn]);ln=[];up=[];dn=[]};
+   for(let t=a0;t<=a1;t+=2){const k=akernel(pts,t,21),mu=k.mu,sd=Math.max(1.5,k.sd)*Math.min(1.8,Math.sqrt(k.h/21));ln.push(x(t).toFixed(1)+','+y(mu).toFixed(1));up.push(x(t).toFixed(1)+','+y(mu+sd).toFixed(1));dn.unshift(x(t).toFixed(1)+','+y(mu-sd).toFixed(1))}
+   flush();nSeg[i]=segs.length;const ll=segs.length?segs[segs.length-1][0]:null;if(ll){const [lx,ly]=ll[ll.length-1].split(',').map(Number);tEnd[i]={x:lx,y:ly,mu:(hi-(ly-m.t)/(H-m.t-m.b)*(hi-lo))}}
+   segs.forEach(([l,u,d])=>{g+=`<g class="tr"><polygon points="${u.join(' ')} ${d.join(' ')}" fill="${c}" opacity=".12"/><polyline points="${l.join(' ')}" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/></g>`})})}
+ // 同一家機構的連線（滑過才顯示）
+ const byWho={};dated.forEach((p,j)=>(byWho[p.who]=byWho[p.who]||[]).push([mids[j],p]));
+ Object.entries(byWho).forEach(([w,arr])=>{if(arr.length<2)return;arr.sort((a,b)=>a[0]-b[0]);
+  race.c.forEach(([n,pt],i)=>{g+=`<polyline class="hl" data-k="${w}" points="${arr.map(([t,p])=>(x(t)+(i?4:-4)).toFixed(1)+','+y(p.v[i]).toFixed(1)).join(' ')}" fill="none" stroke="${P[pt].c}" stroke-width="1.5" stroke-dasharray="4 3" opacity="0" style="pointer-events:none;transition:opacity .15s"/>`})});
+ const ends=[];let latest=null;
+ dated.forEach((p,pi)=>{const mid=mids[pi],xx=x(mid),e=moeOf(p),web=p.m==='網路問卷';if(!latest||mid>latest.mid)latest={p,mid};
+  race.c.forEach(([n,pt],i)=>{const c=P[pt].c,xo=xx+(i?4:-4),v=p.v[i];
+   g+=`<g class="pt" data-k="${p.who}">`+(e?`<line x1="${xo}" x2="${xo}" y1="${y(v+e[0])}" y2="${y(v-e[0])}" stroke="${c}" stroke-width="1.6" opacity=".28" stroke-linecap="round"/>`:'')+`<circle cx="${xo}" cy="${y(v)}" r="4" fill="${web?'#fff':c}" fill-opacity="${okTrend&&!web?.7:1}" stroke="${web?c:'#fff'}" stroke-width="${web?2.5:1.5}"/>`+(p.pc?`<circle cx="${xo}" cy="${y(v)}" r="8.5" fill="none" stroke="#b4322a" stroke-width="1.2" stroke-dasharray="2 2"/>`:'')+`<circle class="hit" cx="${xo}" cy="${y(v)}" r="12" fill="transparent" data-p="${race.polls.indexOf(p)}" data-c="${i}"/></g>`})});
+ if(okTrend&&tEnd.length===2)race.c.forEach(([n,pt],i)=>ends.push({y:tEnd[i].y,x:tEnd[i].x+8,t:`${n} ${tEnd[i].mu.toFixed(1)}`,c:P[pt].t}));
+ else if(latest)race.c.forEach(([n,pt],i)=>ends.push({y:y(latest.p.v[i]),x:x(latest.mid)+14,t:`${n} ${latest.p.int?latest.p.v[i]:latest.p.v[i].toFixed(latest.p.dec||1)}`,c:P[pt].t}));
+ ends.sort((a,b)=>a.y-b.y);for(let i=1;i<ends.length;i++)if(ends[i].y-ends[i-1].y<16)ends[i].y=ends[i-1].y+16;
+ ends.forEach(L=>g+=`<text x="${L.x}" y="${L.y+4}" font-size="12.5" font-weight="700" fill="${L.c}" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">${L.t}</text>`);
+ s.innerHTML=g;
+ $('#etlnote').innerHTML+=okTrend?' <br><b>粗線</b>為參考趨勢：只用電話（含混合）民調、排除陣營委託與網路問卷，各家等權、至少 21 天寬的高斯加權平均；<b>淡色帶</b>是各家結果的分歧程度（加權標準差），不是誤差範圍，也不是預測。線尾數字是參考趨勢的最後數值，不是任何一份民調。'+'民調較少的時段，計算範圍會自動放寬，色帶也跟著變寬，表示那段比較不確定。':` <br>這場選舉符合條件的電話民調不足（需至少 6 份、3 家機構，目前 ${elig.length} 份），不畫趨勢線，只列出各份結果；線尾數字是最新一份民調（${latest?latest.p.who:''}，${latest?latest.p.d:''}）。`;
+ s.querySelectorAll('.hit').forEach(h=>{const p=race.polls[+h.dataset.p],e=moeOf(p),[n]=race.c[+h.dataset.c],f=v=>p.int?v:v.toFixed(p.dec||1);
+  h.addEventListener('mouseenter',()=>highlight(s,p.who));
+  h.addEventListener('mousemove',ev=>showTip(ev,`<b>${p.who}</b>・調查 ${p.d}<br>${race.c.map(([nn],i)=>`${nn} ${f(p.v[i])}%`).join('・')}<br>${e?`誤差 ±${e[0]}（${e[1]}）`:'誤差未公布'}${p.m==='網路問卷'?'<br>網路問卷，非隨機抽樣':''}${p.pc?'<br>陣營委託：'+p.pc:''}${p.sec?'<br>數字取自彙整報導，原始發布待核':''}`));
+  h.addEventListener('mouseleave',()=>{highlight(s,eorg);hideTip()})});
+ if(eorg)highlight(s,eorg);
+}
+const etlRO=new ResizeObserver(drawTimeline);etlRO.observe(etlSvg);
+document.addEventListener('click',e=>{
+ const o=e.target.closest('#ebody [data-org]');if(o){eorg=o.dataset.org||null;renderRace();$('#etabh').scrollIntoView({behavior:'smooth',block:'start'});return}
+ const mh=e.target.closest('#etab .mh button');if(mh){const tb=mh.closest('tbody'),m=+tb.dataset.m,op=tb.classList.toggle('shut')===false;op?emOpen.add(m):emOpen.delete(m);mh.setAttribute('aria-expanded',op);mh.querySelector('.tgl').textContent=op?'收起':'展開';return}
+ const tr=e.target.closest('#etab tr.er');if(tr&&!e.target.closest('a')){const i=+tr.dataset.i,on=!eopen.has(i);on?eopen.add(i):eopen.delete(i);tr.classList.toggle('on',on);tr.querySelector('.xb').setAttribute('aria-expanded',on);tr.nextElementSibling.hidden=!on}
+});
+function renderRace(){
+ $('#races').innerHTML=RACES.map(r=>`<button class="chip" data-r="${r.id}" aria-pressed="${r===race}">${r.name}</button>`).join('');
+ document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{race=RACES.find(r=>r.id===b.dataset.r);emon='all';eorg=null;emOpen=null;eopen=new Set();renderRace()}));
+ const [A,B]=race.c;
+ $('#cands').innerHTML=race.c.map(([n,p])=>`<span><i style="background:${P[p].c}"></i>${n}（${P[p].n}）</span>`).join('');
+ const endOf=p=>p.d?doy(p.d.split('–')[1]):-1;
+ const ps=[...race.polls].sort((a,b)=>endOf(b)-endOf(a));
+ const cut=doy('10-19'),rec=ps.filter(p=>endOf(p)>=cut);
+ const lead=[0,0];rec.forEach(p=>{if(p.v[0]>p.v[1])lead[0]++;else if(p.v[1]>p.v[0])lead[1]++});
+ const fr=v=>Number.isInteger(v)?String(v):v.toFixed(1);
+ const rng=i=>{const vs=rec.map(p=>p.v[i]);return `${fr(Math.min(...vs))}–${fr(Math.max(...vs))}%`};
+ $('#esum').innerHTML=!rec.length?`<div>封關前 30 天內沒有公開民調・全年共 <b class="num">${ps.length}</b> 份</div>`:`<div>封關前 30 天內 <b class="num">${rec.length}</b> 份・全年 ${ps.length} 份</div>
+  <div>${A[0]}領先 <b class="num">${lead[0]}</b> 份・${B[0]}領先 <b class="num">${lead[1]}</b> 份</div>
+  <div>支持度範圍：${A[0]} <b class="num" style="font-size:16px">${rec.length>1?rng(0):fr(rec[0].v[0])+'%'}</b>・${B[0]} <b class="num" style="font-size:16px">${rec.length>1?rng(1):fr(rec[0].v[1])+'%'}</b></div>`;
+ const fv=(p,v)=>p.int?String(v):v.toFixed(p.dec||1);
+ const monOf=p=>p.d?+p.d.split('–')[1].split('/')[0]:0;
+ const mons=[...new Set(ps.map(monOf).filter(Boolean))].sort((a,b)=>b-a),hasUnd=ps.some(p=>!p.d);
+ if(emon!=='all'&&!mons.includes(+emon)&&!(emon==='0'&&hasUnd))emon='all';
+ if(!emOpen)emOpen=new Set(ps.length<=12?mons:[mons[0]]);
+ const [[nA,pA],[nB,pB]]=race.c;
+ const gapOf=p=>p.v[0]-p.v[1];
+ const chip=p=>{const g=gapOf(p),ab=Math.abs(g),t=p.int?ab:ab.toFixed(p.dec||1);if(!ab)return '<span class="lead tie">平手</span>';const w=g>0?[nA,pA]:[nB,pB];return `<span class="lead" style="--c:${P[w[1]].c}" aria-label="${w[0]}領先 ${t} 個百分點"><span class="ln">${w[0]} </span>+${t}</span>`};
+ const tags=p=>(p.m==='網路問卷'?'<span class="tg web">網路問卷</span>':'')+(p.pc?'<span class="tg pc">陣營委託</span>':'')+(p.sec?'<span class="tg sec">待核</span>':'');
+ const tint=(v,c)=>`background:color-mix(in srgb,${c} ${Math.round(Math.max(6,Math.min(46,(v-15)*1.25)))}%,#fff)`;
+ const mvs=p=>{const web=p.m==='網路問卷',rest=Math.max(0,100-p.v[0]-p.v[1]),hiA=p.v[0]>p.v[1],hiB=p.v[1]>p.v[0],cA=P[pA].c,cB=P[pB].c;
+  const seg=c=>web?`background:repeating-linear-gradient(135deg,${c} 0 5px,color-mix(in srgb,${c} 50%,#fff) 5px 8px)`:`background:${c}`;
+  return `<div class="mvs" role="img" aria-label="${nA} ${fv(p,p.v[0])}%，其他或未表態 ${rest.toFixed(1)}%，${nB} ${fv(p,p.v[1])}%"><b class="na num${hiA?' hi':''}" style="color:${P[pA].t}">${fv(p,p.v[0])}</b><span class="mbar"><i style="flex:${p.v[0]};${seg(cA)}"></i><i class="mr" style="flex:${rest}"></i><i style="flex:${p.v[1]};${seg(cB)}"></i><em></em></span><b class="nb num${hiB?' hi':''}" style="color:${P[pB].t}">${fv(p,p.v[1])}</b></div>`};
+ const sd=d=>d?d.replace(/^(\d+)\/(\d+)–\1\/(\d+)$/,(m,a,b,c)=>`${+a}/${+b}–${+c}`).replace(/^(\d+)\/(\d+)–(\d+)\/(\d+)$/,(m,a,b,c,e)=>`${+a}/${+b}–${+c}/${+e}`):'未載明';
+ const vsBar=p=>{const web=p.m==='網路問卷',rest=Math.max(0,100-p.v[0]-p.v[1]),gap=Math.abs(gapOf(p)),cA=P[pA].c,cB=P[pB].c;
+  const seg=c=>web?`background:repeating-linear-gradient(135deg,${c} 0 6px,color-mix(in srgb,${c} 55%,#fff) 6px 9px)`:`background:${c}`;
+  return `<div class="vs"><div class="vh"><span style="color:${P[pA].t}">${nA} <b class="num">${fv(p,p.v[0])}%</b></span><span class="vg num">差距 ${p.int?gap:gap.toFixed(p.dec||1)}<br>其他／未表態 ${rest.toFixed(p.int?0:1)}%</span><span style="color:${P[pB].t}"><b class="num">${fv(p,p.v[1])}%</b> ${nB}</span></div>
+  <div class="vb" role="img" aria-label="${nA} ${fv(p,p.v[0])}%，其他或未表態 ${rest.toFixed(1)}%，${nB} ${fv(p,p.v[1])}%"><span class="a" style="flex:${p.v[0]};${seg(cA)}" data-t="${nA} ${fv(p,p.v[0])}%"></span><span class="r" style="flex:${rest}" data-t="其他候選人、不投票或未表態 ${rest.toFixed(1)}%"></span><span class="b" style="flex:${p.v[1]};${seg(cB)}" data-t="${nB} ${fv(p,p.v[1])}%"></span><i class="mid"></i></div>
+  <div class="vf"><span>0</span><span>50%</span><span>100</span></div>${web?'<p class="meta" style="margin:6px 0 0">斜線表示網路問卷（非隨機抽樣）。</p>':''}</div>`};
+ const detail=p=>{const e=moeOf(p),disc=[p.d,p.m,p.n,p.moe||p.m==='網路問卷'].filter(Boolean).length;
+  const rows=[['調查期間',p.d?(p.dl||p.d):`<span class="tg pc" style="margin:0">未載明</span> ${p.pub||''}`],['方式',p.m||'<span class="tg pc" style="margin:0">未載明</span>'],['有效樣本',p.n?p.n.toLocaleString()+' 人':'未載明'],['抽樣誤差',p.m==='網路問卷'?'網路問卷不適用':e?`±${e[0]}（${e[1]}）`:'未公布'],['未決定',p.und!=null?p.und+'%':'未公布'],
+   ['委託／經費',[p.pc?'陣營委託：'+p.pc:'',p.sp||'',p.pl?(p.pl.startsWith('執行')?p.pl:'規劃：'+p.pl):''].filter(Boolean).join('；')||'見機構名稱'],...(p.note?[['註記',p.note]]:[]),['揭露完整度',`${disc}/4 項`]];
+  return `<div class="edin"><div>${vsBar(p)}</div><div><dl class="edl">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+   <div class="edlk"><a href="${p.url}">原始出處</a><button class="lk" data-org="${p.who}">只看${p.who.replace(/（.*$/,'')}的民調</button></div></div></div>`};
+ const row=p=>{const i=race.polls.indexOf(p),open=eopen.has(i),hiA=p.v[0]>p.v[1],hiB=p.v[1]>p.v[0],rest=Math.max(0,100-p.v[0]-p.v[1]);
+  return `<tr class="er${open?' on':''}" data-i="${i}" data-m="${monOf(p)}"><td class="d hs">${sd(p.d)}</td><td class="o"><b>${p.who}</b><span class="od">${sd(p.d)}</span>${tags(p)}</td><td class="hs mt">${p.m||'—'}</td><td class="hs nn num">${p.n?p.n.toLocaleString():'—'}</td>
+   <td class="vsc">${mvs(p)}</td><td class="g">${chip(p)}</td><td class="x hs"><button class="xb" aria-expanded="${open}" aria-label="展開${p.who}的長條圖與調查方法"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td></tr>
+   <tr class="ed" data-m="${monOf(p)}"${open?'':' hidden'}><td colspan="7">${detail(p)}</td></tr>`};
+ const head=`<thead><tr><th class="hs">調查日期</th><th>機構<span class="od">・調查日期</span></th><th class="hs">方式</th><th class="hs nn">樣本</th><th class="vsh"><span><i class="cd" style="background:${P[pA].c}"></i>${nA}</span><span class="mid">支持度（%）・灰色為其他／未表態</span><span>${nB}<i class="cd" style="background:${P[pB].c};margin:0 0 0 5px"></i></span></th><th>差距</th><th class="hs"><span class="sr">展開</span></th></tr></thead>`;
+ let list=ps;if(eorg)list=ps.filter(p=>p.who===eorg);
+ if(!eorg&&emon!=='all')list=ps.filter(p=>monOf(p)===+emon);
+ $('#emon').innerHTML=`<button class="chip" data-em="all" aria-pressed="${emon==='all'&&!eorg}">全部<span class="cn">${ps.length}</span></button>`+mons.map(m=>`<button class="chip" data-em="${m}" aria-pressed="${!eorg&&emon===String(m)}">${m} 月<span class="cn">${ps.filter(p=>monOf(p)===m).length}</span></button>`).join('')+(hasUnd?`<button class="chip" data-em="0" aria-pressed="${!eorg&&emon==='0'}">日期未載明<span class="cn">${ps.filter(p=>!p.d).length}</span></button>`:'');
+ document.querySelectorAll('#emon [data-em]').forEach(b=>b.addEventListener('click',()=>{emon=b.dataset.em;eorg=null;if(emon!=='all')emOpen.add(+emon);renderRace()}));
+ $('#eorgbar').innerHTML=eorg?`<div class="ofb">只顯示「<b>${eorg}</b>」的 ${list.length} 份民調，趨勢圖上也只標出這家。<button class="lk" data-org="">顯示全部機構</button></div>`:'';
+ if(eorg){$('#emnote').innerHTML='同一家機構用同一套方法，前後的變化才有比較意義。'}
+ else if(emon!=='all'&&emon!=='0'&&list.length){const sa=list.filter(p=>p.v[0]>p.v[1]).length,sb=list.filter(p=>p.v[1]>p.v[0]).length,vs=i=>list.map(p=>p.v[i]);
+  $('#emnote').innerHTML=`${emon} 月共 <b>${list.length}</b> 份：${nA}領先 ${sa} 份、${nB}領先 ${sb} 份；支持度範圍 ${nA} ${fr(Math.min(...vs(0)))}–${fr(Math.max(...vs(0)))}%、${nB} ${fr(Math.min(...vs(1)))}–${fr(Math.max(...vs(1)))}%。各家方法不同，只看範圍，不算平均。`}
+ else $('#emnote').innerHTML=emon==='0'?'這些民調沒有載明調查日期，只知道公布時間，無法歸到月份。':`依調查結束日由新到舊排列，數字為支持度（%），長條中間灰色是其他候選人或未表態，斜線為網路問卷。點任一列，可看大長條圖與調查方法。`;
+ let body;
+ if(eorg||emon!=='all')body=`<tbody>${list.map(row).join('')}</tbody>`;
+ else{const groups=mons.map(m=>[m,ps.filter(p=>monOf(p)===m)]);if(hasUnd)groups.push([0,ps.filter(p=>!p.d)]);
+  body=groups.map(([m,a])=>{const op=emOpen.has(m),sa=a.filter(p=>p.v[0]>p.v[1]).length,sb=a.filter(p=>p.v[1]>p.v[0]).length;
+   return `<tbody class="mg${op?'':' shut'}" data-m="${m}"><tr class="mh"><th colspan="7"><button aria-expanded="${op}"><span class="mt1">${m?m+' 月':'日期未載明'}</span><span class="meta">${a.length} 份・${nA}領先 ${sa}、${nB}領先 ${sb}</span><span class="tgl">${op?'收起':'展開'}</span></button></th></tr>${a.map(row).join('')}</tbody>`}).join('')}
+ $('#etab').innerHTML=list.length?`<div class="etw"><table class="et">${head}${body}</table></div>`:'<div class="empty">這個條件下沒有民調。</div>';
+ document.querySelectorAll('#etab .vb span').forEach(d=>{d.addEventListener('mousemove',e=>showTip(e,d.dataset.t));d.addEventListener('mouseleave',hideTip)});
+ // 各家機構
+ const orgs=[...new Set(ps.map(p=>p.who))].map(w=>{const a=ps.filter(p=>p.who===w);return {w,a,last:a[0],first:a[a.length-1]}}).sort((x,y)=>endOf(y.last)-endOf(x.last));
+ $('#eorgs').innerHTML=`<div class="etw"><table class="et eo"><thead><tr><th>機構</th><th class="nn hs">份數</th><th class="hs">最近一次</th><th class="vsh"><span>${nA}</span><span class="mid">最近一次</span><span>${nB}</span></th><th>差距</th><th class="hs">前後變化（最早 → 最近）</th></tr></thead><tbody>${orgs.map(o=>{const p=o.last,hiA=p.v[0]>p.v[1],hiB=p.v[1]>p.v[0];
+  return `<tr${eorg===o.w?' class="sel"':''}><td class="o"><button class="lk on" data-org="${o.w}">${o.w}</button><span class="od">${o.a.length} 份・最近 ${sd(p.d)}</span>${tags(p)}</td><td class="nn num hs">${o.a.length}</td><td class="d hs">${sd(p.d)}</td><td class="vsc">${mvs(p)}</td><td class="g">${chip(p)}</td><td class="hs">${o.a.length>1?`${chip(o.first)}<span class="arr">→</span>${chip(o.last)}`:'<span class="meta">只有一份</span>'}</td></tr>`}).join('')}</tbody></table></div>
+  <p class="meta">點機構名稱，下方的全部民調表與上方的趨勢圖就只顯示這家。陣營委託與網路問卷照收，但標出來，也不放進參考趨勢線。</p>`;
+ drawTimeline();
+}
+
+/* ---------- 議題 ---------- */
+const PARTY=[['民進黨',46.5,13.2,40.3,'+3.4'],['國民黨',29.4,15.6,55.0,'+2.9'],['台灣民眾黨',25.8,16.8,57.4,'+4.8'],['中國共產黨',6.1,17.8,76.1,'+1.5']];
+$('#pfav').innerHTML=PARTY.map(([n,a,m,b,c])=>`<div class="irow"><div>${n}</div>${stack([a,m,b],['喜歡','不喜歡'])}<div class="chg num">較上月 ${c}</div></div>`).join('');
+
+
+/* ---------- 追蹤來源 ---------- */
+const SOURCES=[
+ {g:'每月固定發布',n:'美麗島電子報 國政民調',k:'媒體',t:['施政','政黨','議題'],freq:'每月，月初公布上月調查',who:'美麗島電子報出資；問卷與執行單位會換（7 月起：張佑宗設計、趨勢民調執行；6 月以前：戴立安設計、畢肯執行）',m:'市話＋手機 CATI，約 1,000–1,200 人',ch:'美麗島電子報官網的國政民調專頁',last:['10/27–10/29','總統滿意度、政黨喜好度、普發現金等議題','https://www.my-formosa.com.tw/DOC_230543.htm'],note:'6 月以前內文直接寫出各黨支持者比例；7 月起只在附表一（圖片）列出各黨樣本數，要自己換算。頁面內文由程式載入，要用瀏覽器開才讀得到。',ok:1},
+ {g:'每月固定發布',n:'台灣民心調查（戴立安）',k:'學者品牌',t:['施政','議題','選舉'],freq:'每月下旬',who:'戴立安委託並出資、設計與分析；畢肯市場研究執行',m:'市話＋手機 CATI，約 1,075 人',ch:'記者會與新聞稿，由三立、自由等轉載',last:['10/20–10/22','總統信任度與滿意度、閣揆滿意度','https://www.mirrormedia.mg/external/setn_1929202'],note:'有報導把 9 月號寫成信民協會公布，但原始說明載明由戴立安委託出資。歸屬一律以「委託／經費」欄為準。',ok:1},
+ {g:'每月固定發布',n:'震傳媒',k:'媒體',t:['施政','議題','選舉'],freq:'約每月一次時事民調，選前另加地方選情',who:'震傳媒出資；山水民意研究執行',m:'市話＋手機約各半 CATI，約 1,070 人',ch:'震傳媒自家發布，ETtoday、民視等轉載',last:['8/15–8/17','總統滿意度、信任度、政黨支持度','https://www.ettoday.net/news/20260819/3222068.htm'],note:'10/22 另發布台北市長民調。',mine:1,ok:1},
+ {g:'選前密集或不定期',n:'信民協會（台北市信民兩岸研究協會）',k:'協會',t:['選舉'],freq:'選前密集，2026 年 9 月起約每月一次',who:'協會出資；委託戴立安設計與分析，畢肯市場研究執行',m:'市話＋手機雙底冊，約 1,070 人',ch:'記者會',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'本季另有台北（9 月、10 月）、雙北、桃園市長民調。',mine:1,ok:1},
+ {g:'選前密集或不定期',n:'鋒燦傳媒',k:'媒體',t:['選舉'],freq:'偶爾',who:'鋒燦傳媒委託；台大政治系張佑宗規劃',m:'報導未載明',ch:'由其他媒體轉載',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'張佑宗也設計美麗島 10 月號問卷，所以「規劃者」要獨立成一欄。',mine:1,ok:1},
+ {g:'選前密集或不定期',n:'聯合報系民意調查中心',k:'媒體',t:['施政','議題','選舉'],freq:'不定期，固定幾個年度調查（總統就職周年、兩岸關係年度大調查、統獨）',who:'聯合報系自行執行',m:'電話訪問，以住宅電話尾數兩位隨機為主',ch:'聯合新聞網的民調報導',last:['5/22–5/27','賴總統執政兩周年：滿意 41%、不滿意 50%','https://newtalk.tw/news/view/2026-06-01/1038625'],note:'只公布整數百分比。',mine:1,ok:1},
+ {g:'選前密集或不定期',n:'鏡新聞（鏡週刊、鏡電視）',k:'媒體',t:['選舉','議題'],freq:'不定期，選前每週約一縣市',who:'鏡新聞出資；大地民意研究執行（主持人翁紹桓）',m:'地方選舉用市話；全國調查用市話＋手機',ch:'鏡週刊網站的鏡新聞民調報導',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'本季另有基隆（10/18–21）、高雄（6/8–9）。',mine:1,ok:1},
+ {g:'選前密集或不定期',n:'TVBS 民調中心',k:'媒體',t:['選舉','施政','政黨'],freq:'不定期，選前密集',who:'TVBS 自行執行並出資',m:'市話＋手機，人員電話訪問',ch:'官網會放 PDF 報告，表頭固定列出訪問時間、方法、樣本、誤差、經費來源',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'PDF 格式固定，是最容易自動擷取的來源。全國調查若有「政黨傾向」交叉表，表頭會印出各黨比例（整數），可當政黨支持度；完整交叉表放在民調中心網站，封關期間網站暫停。',ok:1},
+ {g:'選前密集或不定期',n:'ETtoday 民調雲',k:'媒體',t:['選舉'],freq:'不定期',who:'ETtoday',m:'網路問卷（手機簡訊、電子報通知）',ch:'ETtoday 新聞雲',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'網路問卷沒有抽樣誤差，應和電話民調分開標示。',ok:1},
+ {g:'選前密集或不定期',n:'中國時報',k:'媒體',t:['選舉'],freq:'選前',who:'中國時報',m:'住宅電話',ch:'中時新聞網',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],ok:1},
+ {g:'選前密集或不定期',n:'年代民調中心',k:'媒體',t:['選舉'],freq:'選前',who:'年代',m:'電話訪問',ch:'年代新聞',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],ok:1},
+ {g:'選前密集或不定期',n:'新台灣國策智庫',k:'智庫',t:['選舉','施政'],freq:'不定期',who:'新台灣國策智庫',m:'市話',ch:'記者會',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],ok:1},
+ {g:'選前密集或不定期',n:'世新大學民意調查中心',k:'學術',t:['選舉'],freq:'受委託時',who:'由委託方出資，例如台中市長民調委託方為國民黨台中市議會黨團',m:'CATI 電話訪問',ch:'委託方發布',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'學術單位常受政黨或候選人委託，委託方一定要顯示。',ok:1},
+ {g:'選前密集或不定期',n:'鉅聞天下新聞網（皮爾森數據執行）',k:'媒體',t:['選舉'],freq:'不定期',who:'鉅聞天下出資；皮爾森數據執行',m:'網路問卷（網路人口、主動發放），自稱誤差 ±2.30%，但非隨機抽樣',ch:'鉅聞天下新聞網',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'網路問卷：收錄但空心點標示、不納入趨勢線。',mine:1,ok:1},
+ {g:'政黨或候選人委託',n:'國民黨新北市議會黨團（委託 TVBS 執行）',k:'政黨委託',t:['選舉'],freq:'2026 年 6 月起約每月一波',who:'國民黨新北市議會黨團委託；TVBS 民調中心執行',m:'市話 RDD，人員電話訪問，約 1,200–1,300 人',ch:'黨團記者會',last:['封關期間','選舉民調依法暫不顯示，11/28 16:00 後恢復','#about'],note:'執行單位與 TVBS 自辦民調相同，但委託方不同，必須分開標示。依規則收錄、不納入趨勢線。',mine:1,ok:1},
+ {g:'學術長期追蹤',n:'政大選舉研究中心',k:'學術',t:['政黨'],freq:'每半年更新一次趨勢圖（1–6 月合併於 7 月初公布，全年於隔年初公布）',who:'政大選研中心；資料來自該中心當期所有電訪研究案合併',m:'市話＋手機，2026 年 1–6 月合併 4,807 人',ch:'選研中心官網「重要政治態度分佈趨勢圖」',last:['2026 年 1–6 月','政黨偏好：民進黨 33.8%、國民黨 21.0%、民眾黨 8.8%','https://esc.nccu.edu.tw/PageDoc/Detail?fid=7806&id=6965'],note:'是多次調查的合併平均，不能當成某一個月的單次民調。',ok:1},
+ {g:'已停止發布',n:'台灣民意基金會',k:'基金會',t:['施政','議題','選舉'],freq:'原為每月',who:'山水民意研究執行',m:'市話 70%＋手機 30%',ch:'官網',last:['2026 年 3 月','游盈隆轉任中選會主委後停止例行發布','https://www.storm.mg/article/11112082'],ok:0}
+];
+let sf='all';
+const SK=[...new Set(SOURCES.map(x=>x.k))];
+$('#srck').insertAdjacentHTML('beforeend',SK.map(k=>`<option>${k}</option>`).join(''));
+function renderSources(){
+ const sk=$('#srck').value,ss=$('#srcs').value,q=$('#srcq').value.trim().toLowerCase();
+ const list=SOURCES.filter(x=>(sf==='all'||x.t.includes(sf)||(sf==='議題'&&x.t.includes('政黨')))&&(!sk||x.k===sk)&&(ss===''||String(x.ok)===ss)&&(!q||[x.n,x.who,x.ch,x.note||'',x.m].join(' ').toLowerCase().includes(q)));
+ $('#srcres').textContent=list.length===SOURCES.length?`共 ${list.length} 個來源`:`符合條件的來源 ${list.length} 個（共 ${SOURCES.length} 個）`;
+ if(!list.length){$('#srcgroups').innerHTML='<div class="empty">沒有符合條件的來源。可以清掉搜尋字、或把類型改回「全部類型」。</div>';return}
+ const groups=[...new Set(SOURCES.map(x=>x.g))];
+ $('#srcgroups').innerHTML=groups.map(g=>{const xs=list.filter(x=>x.g===g);if(!xs.length)return'';
+  return `<div class="grp">${g}（${xs.length}）</div><div class="sgrid">${xs.map(x=>`<div class="src">
+  <h3>${x.n}${x.mine?'<span class="new">新增</span>':''}</h3>
+  <div>${x.ok?'<span class="badge ok">運作中</span>':'<span class="badge alert">已停止</span>'}<span class="badge">${x.k}</span>${x.t.map(t=>`<span class="badge">${t}</span>`).join('')}</div>
+  <dl><dt>頻率</dt><dd>${x.freq}</dd><dt>委託／執行</dt><dd>${x.who}</dd><dt>方式</dt><dd>${x.m}</dd><dt>去哪裡抓</dt><dd>${x.ch}</dd>
+  <dt>最近一筆</dt><dd>${x.last[0]}・${x.last[1]}・<a href="${x.last[2]}">來源</a></dd>${x.note?`<dt>注意</dt><dd>${x.note}</dd>`:''}</dl></div>`).join('')}</div>`}).join('');
+}
+document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{sf=b.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderSources()}));
+['#srck','#srcs'].forEach(id=>$(id).addEventListener('change',renderSources));$('#srcq').addEventListener('input',renderSources);
+$('#srccount').textContent=SOURCES.filter(x=>x.ok).length;
+$('#srcn').textContent=SOURCES.filter(x=>x.ok).length;
+renderSources();
+
+
+
+/* ---------- 揭露聲明 ---------- */
+const DIS=[
+ ['這裡不是民意調查',`<ul><li>本站沒有進行任何抽樣、電話訪問或網路問卷。頁面上每個百分比都引自已公開發布的民調，並附原始出處連結。</li><li>趨勢線是本站依公開民調計算的彙整結果，圖上標示「彙整趨勢」，引用時不得稱為「某某民調」。</li></ul>`],
+ ['經營者與政治中立',`<ul><li>經營者：<span class="todo">待填</span>。聯絡方式：<span class="todo">待填</span>。</li><li>本站<span class="todo">未受任何政黨、候選人、競選團隊或其代理人委託、贊助或資助（待經營者確認）</span>。</li><li>所有收錄、排除、計算規則對各政黨與候選人對稱適用；同一套元件與配色呈現所有陣營。</li></ul>`],
+ ['收錄標準',`<ul><li>已公開發布，並找得到原始出處（民調單位發布、記者會資料或首發報導）。</li><li>至少載明調查單位與題目結果；其餘欄位（調查期間、方式、樣本數、誤差、委託方、經費）缺少者仍收錄，但逐項標示「未載明」，並計入揭露完整度。</li><li>同一份民調被多家媒體轉載時只算一筆，保留所有來源連結。</li></ul>`],
+ ['分類與排除規則',`<table class="stack"><thead><tr><th>類型</th><th>是否收錄</th><th>是否納入趨勢線</th></tr></thead><tbody>
+  <tr><td>媒體、學術單位、智庫、協會自行出資的電話民調</td><td>收錄</td><td>納入</td></tr>
+  <tr><td>政黨、黨團、候選人或其競選團隊委託的民調（例：國民黨新北市議會黨團委託 TVBS 執行的系列）</td><td>收錄，標示委託方</td><td>不納入，各黨一律適用</td></tr>
+  <tr><td>網路問卷（非隨機抽樣，例：皮爾森數據為鉅聞天下執行的網路調查）</td><td>收錄，空心點標示</td><td>不納入，不推算誤差</td></tr>
+  <tr><td>政黨內部民調外流、未公布方法者</td><td>不收錄</td><td>—</td></tr>
+  <tr><td>網路投票、社群投票等自願參與的投票，以及街頭訪問</td><td>不收錄</td><td>—</td></tr><tr><td>AI 民意模擬（以 AI 虛擬受訪者產生結果，例：TPOC「矽基樣本」）</td><td>不收錄，不是民意調查</td><td>—</td></tr></tbody></table>`],
+ ['數字怎麼算',`<ul><li>誤差：優先用來源公布值；未公布但有樣本數時，依 95% 信心水準推算並標明「推算」；兩者皆無則不畫誤差。</li><li>趨勢線：以調查期間中點為準，25 天高斯權重加權平均，每份權重相同；前後一個月內沒有民調的區段不畫線；尚未校正各機構的系統性差異。</li><li>選舉民調不計算跨機構平均；某場選舉載明日期的民調少於 6 份或少於 3 家機構時，只畫各份民調，不畫趨勢線。</li></ul>`],
+ ['AI 的角色',`<ul><li>AI 只用於從新聞與發布資料中擷取欄位（日期、樣本數、數字等）。每個數字都要能對回原文那一句，無法對回的不上線。</li><li>趨勢、誤差等計算由固定程式完成，不使用 AI 判斷。</li></ul>`],
+ ['選舉民調封關',`<ul><li>依《公職人員選舉罷免法》，投票日前 10 日起至投票截止，任何人不得發布、報導、散布、評論或引述選舉民調。</li><li>本站在封關期間自動隱藏選舉民調區塊，施政滿意度與政黨支持度照常顯示。</li><li>封關期間引述本站選舉民調內容者，自負法律責任。法規說明為本站的合規設計，確切適用以中選會函釋與法院見解為準。</li></ul>`],
+ ['更正與引用',`<ul><li>發現數字或出處錯誤，請來信 <span class="todo">待填</span>。確認後更正，並在該筆資料旁保留更正紀錄與日期。</li><li>引用本站整理時，請同時註明原始民調單位與本站連結。</li><li>民調反映的是調查當時的意向，不等於選舉結果或預測。</li></ul>`]
+];
+$('#dis').innerHTML=DIS.map(([t,b],i)=>`<div><h3>${i+1}. ${t}</h3>${b}</div>`).join('');
+
+/* ---------- 色票 ---------- */
+const SW=[['主要政黨'],['民進黨','#1f7a3a','綠'],['國民黨','#2e64b7','藍'],['台灣民眾黨','#3aacc9','水藍・字 #1d7f97'],['親民黨','#e88825','橘・字 #b5600f'],['時代力量','#f0d046','黃・字 #8a6d00，圓點加深色外框'],
+ ['候選人／其他'],['無黨籍','#6b7480','石板灰'],['其他政黨','#a3aab4','中灰，小黨一律歸此'],
+ ['意見分布'],['正面（滿意／贊成／喜歡）','#8a5cd6','紫，資料圖一律平塗'],['未表態／沒意見／未決定','#d6dae0','淺灰'],['不知道／拒答','repeating-linear-gradient(135deg,#d6dae0 0 5px,#eef0f3 5px 9px)','淺灰斜紋（來源有分開列時才用）'],['負面（不滿意／不贊成／不喜歡）','#e65a52','紅，資料圖一律平塗']];
+$('#swatches').innerHTML=SW.map(x=>x.length===1?`<div class="swh">${x[0]}</div>`:`<div class="swc"><i style="background:${x[1]}"></i><div><b>${x[0]}</b><span>${x[1].startsWith('#')?x[1]+'・':''}${x[2]}</span></div></div>`).join('');
+
+/* ---------- 來源清單 ---------- */
+const LIST=[
+ ['美麗島電子報：2026 年 10 月國政民調','https://www.my-formosa.com.tw/DOC_230543.htm'],
+ ['今周刊：美麗島 9 月國政民調','https://www.businesstoday.com.tw/article/category/183025/post/202610070028/'],
+ ['今周刊：美麗島 7 月國政民調','https://www.businesstoday.com.tw/article/category/183027/post/202608050055/'],
+ ['新頭殼：美麗島 5 月國政民調','https://newtalk.tw/news/view/2026-05-28/1037909'],
+ ['LINE TODAY：美麗島 2026 年 1 月國政民調','https://today.line.me/tw/v3/article/BEq9Yyj'],
+ ['三立／鏡週刊：台灣民心調查 10 月','https://www.mirrormedia.mg/external/setn_1929202'],
+ ['三立／鏡週刊：台灣民心調查 9 月','https://www.mirrormedia.mg/external/setn_1914401'],
+ ['今周刊：台灣民心調查 8 月','https://www.businesstoday.com.tw/article/category/183027/post/202608250012/'],
+ ['風傳媒：台灣民意基金會停止每月發布民調','https://www.storm.mg/article/11112082'],
+ ['ETtoday：震傳媒 8 月時事民調','https://www.ettoday.net/news/20260819/3222068.htm'],
+ ['新頭殼：聯合報賴總統執政兩周年民調','https://newtalk.tw/news/view/2026-06-01/1038625'],
+];
+$('#srclist').innerHTML=LIST.map(([t,u])=>`<li><a href="${u}">${t}</a></li>`).join('');
+
+
+/* ---------- 圖表／表格切換 ---------- */
+const asTab={};
+const TAB={
+ app(){const rows=[...APP].sort((a,b)=>doy(b.d)-doy(a.d)),f=(p,v)=>v==null?'—':(p.int?v:v.toFixed(1))+'%';
+  return `<table class="dt"><thead><tr><th>機構</th><th>期別</th><th>調查結束日</th><th class="n">滿意</th><th class="n">不滿意</th><th class="n">信任</th><th class="n">不信任</th><th class="n">誤差</th></tr></thead><tbody>${rows.map(p=>{const e=moeOf(p);return `<tr><td>${ORG[p.k]}</td><td>${p.lab}</td><td>${p.est?'約 '+fmtD(p.d)+'（推估）':fmtD(p.d)}</td><td class="n">${f(p,p.sat?.[0])}</td><td class="n">${f(p,p.sat?.[1])}</td><td class="n">${f(p,p.trust?.[0])}</td><td class="n">${f(p,p.trust?.[1])}</td><td class="n">${e?'±'+e[0]+(e[1]==='公布'?'':'*'):'—'}</td></tr>`}).join('')}</tbody></table><p class="meta">依調查結束日由新到舊排列；「—」表示該期沒有這一題或沒有公布；誤差標 * 的是來源沒公布、依樣本數推算。</p>`},
+ ps(){const rows=[...PSUP].sort((a,b)=>psMid(b)-psMid(a));
+  return `<table class="dt"><thead><tr><th>機構</th><th>調查日期</th><th class="n">民進黨</th><th class="n">國民黨</th><th class="n">民眾黨</th><th>狀態</th><th>來源</th></tr></thead><tbody>${rows.map(p=>`<tr><td>${PS_ORG[p.k].s}</td><td>${p.d}</td>${p.v.map(v=>`<td class="n">${psf(p,v)}%</td>`).join('')}<td>${p.sec?'<span class="badge warn">待核</span>':'已核對'}</td><td><a href="${p.url}">連結</a></td></tr>`).join('')}</tbody></table>`},
+ etl(){const [A,B]=race.c,end=p=>p.d?doy(p.d.split('–')[1]):-1,rows=[...race.polls].sort((a,b)=>end(b)-end(a)),f=(p,v)=>p.int?v:v.toFixed(p.dec||1);
+  return `<table class="dt"><thead><tr><th>機構</th><th>調查日期</th><th>方式</th><th class="n">${A[0]}</th><th class="n">${B[0]}</th><th class="n">未決定</th><th>標示</th><th>來源</th></tr></thead><tbody>${rows.map(p=>`<tr><td class="w">${p.who}</td><td>${p.d||p.pub||'未載明'}</td><td>${p.m||'未載明'}</td><td class="n">${f(p,p.v[0])}%</td><td class="n">${f(p,p.v[1])}%</td><td class="n">${p.und!=null?p.und+'%':'—'}</td><td class="w">${[p.pc?'陣營委託':'',p.m==='網路問卷'?'網路問卷':'',p.sec?'待核':''].filter(Boolean).map(t=>`<span class="badge${t==='待核'?' warn':t==='陣營委託'?' alert':''}">${t}</span>`).join('')||'—'}</td><td><a href="${p.url}">連結</a></td></tr>`).join('')}</tbody></table>`}
+};
+function fillTables(){document.querySelectorAll('.panel[data-tab]').forEach(pn=>{const k=pn.dataset.tab,on=!!asTab[k];pn.classList.toggle('as-table',on);pn.querySelectorAll('[data-as]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.as==='tab')===on)));const tv=pn.querySelector('.tview');if(on&&tv)tv.innerHTML=TAB[k]()})}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-as]');if(!b)return;const pn=b.closest('.panel[data-tab]');asTab[pn.dataset.tab]=b.dataset.as==='tab';fillTables()});
+
+/* ---------- 政黨支持度 ---------- */
+const PS_ORG={
+ mf2:{n:'美麗島電子報（7 月起：張佑宗設計、趨勢民調執行）',s:'美麗島（7 月起）',m:'市話＋手機',q:'政黨傾向，依附表一各黨樣本數換算'},
+ tw:{n:'台灣民心調查（戴立安設計，畢肯執行）',s:'台灣民心',m:'市話＋手機',q:'自述政治立場（另列其他泛綠、泛藍）'},
+ zm:{n:'震傳媒（山水民意執行）',s:'震傳媒',m:'市話＋手機',q:'政黨傾向：支持／認同哪一黨'},
+ mf:{n:'美麗島電子報（6 月以前：戴立安設計、畢肯執行）',s:'美麗島（1–6 月）',m:'市話＋手機',q:'自述政治立場（8 月起由台灣民心延續同一題）'},
+ tvbs:{n:'TVBS 民調中心',s:'TVBS',m:'市話＋手機',q:'政黨傾向，取自交叉表表頭（整數）'},
+ esc:{n:'政大選舉研究中心（1–6 月多次電訪合併）',s:'政大選研',m:'市話＋手機',q:'政黨偏好，半年合併統計'}};
+const PSUP=[
+ {k:'zm',d:'02/07–02/09',n:1069,moe:3.0,v:[35.5,22.7,10.7],neu:27.4,conf:'中間選民 27.4%（報導用語）',url:'https://www.storm.mg/article/11102634'},
+ {k:'zm',d:'03/27–03/28',v:[35.0,20.5,8.5],url:'https://www.zmedia.com.tw/Document/PoolDetail/41390'},
+ {k:'zm',d:'04/19–04/20',v:[34.1,20.8,9.5],url:'https://www.zmedia.com.tw/Document/PoolDetail/41742'},
+ {k:'zm',d:'05/24–05/25',v:[37.9,19.5,10.5],url:'https://www.zmedia.com.tw/Document/PoolDetail/42360'},
+ {k:'zm',d:'08/15–08/17',v:[34.7,19.3,6.3],neu:35.7,url:'https://www.zmedia.com.tw/Document/PoolDetail/43758'},
+ {k:'tw',d:'08/19–08/21',n:1076,moe:3.0,v:[36.4,18.3,7.2],neu:29.1,sec:1,conf:'報告未放上網。今周刊轉述報告文字：泛綠 40.3%、泛藍 23.3%、民眾黨 7.2%、中立與未表態 29.1%；自由時報引述胡采蘋的三黨數字（36.4／18.3／7.2）與此相符。另一則轉述寫 33.4／18.1／7.1，與報告文字不一致，未採用',url:'https://news.ltn.com.tw/news/politics/breakingnews/5551794'},
+ {k:'tw',d:'09/21–09/23',n:1075,moe:3.0,v:[36.5,16.6,6.4],oth:[3.3,4.3],sec:1,conf:'取自公布當天的報導（自由時報、新頭殼數字一致），報告未放上網',url:'https://newtalk.tw/news/view/2026-09-29/1062445'},
+ {k:'tw',d:'10/20–10/22',n:1075,moe:3.0,v:[38.5,15.7,6.8],neu:27.9,sec:1,conf:'數字取自黃暐瀚轉述，報告未放上網',url:'https://tw.news.yahoo.com/%E6%88%B4%E7%AB%8B%E5%AE%89%E6%B0%91%E8%AA%BF3%E6%88%908%E6%B0%91%E7%9C%BE%E7%9C%8B%E5%A5%BD%E6%B0%91%E9%80%B2%E9%BB%A8-%E8%87%B3%E5%B0%91%E6%8B%BF11%E7%B8%A3%E5%B8%82-%E9%BB%83%E6%9A%90%E7%80%9A-%E6%B0%91%E5%BF%83%E5%B7%B2%E7%B6%93%E8%AE%8A%E4%BA%86-050718018.html'},
+ {k:'mf',d:'01/26–01/28',n:1075,moe:3.0,v:[35.5,18.3,11.6],neu:27.6,conf:'泛綠 38.6%、泛藍 22.2%（陣營合計含小黨）。2 月因春節暫停',url:'https://www.my-formosa.com.tw/DOC_223441.htm'},
+ {k:'mf',d:'03/26–03/28',n:1076,moe:3.0,v:[34.7,16.8,7.4],neu:31.7,conf:'泛綠 39.7%、泛藍 21.0%',url:'https://www.my-formosa.com.tw/DOC_224706.htm'},
+ {k:'mf',d:'04/22–04/24',n:1074,moe:3.0,v:[35.4,21.6,7.0],neu:29.3,conf:'泛綠 38.5%、泛藍 25.1%，其他政黨 2.0%',url:'https://www.my-formosa.com.tw/DOC_225352.htm'},
+ {k:'mf',d:'05/20–05/22',n:1078,moe:3.0,v:[33.2,19.1,7.1],neu:32.8,conf:'泛綠 37.7%、泛藍 22.4%',url:'https://www.my-formosa.com.tw/DOC_226123.htm'},
+ {k:'mf',d:'06/22–06/24',n:1078,moe:3.0,v:[30.4,17.9,7.0],neu:35.7,conf:'泛綠 35.6%、泛藍 21.6%。戴立安設計的最後一期',url:'https://www.my-formosa.com.tw/DOC_226926.htm'},
+ {k:'mf2',d:'07/28–07/30',n:1200,v:[33.7,20.6,7.0],neu:28.7,conf:'依附表一「政黨傾向」各黨加權樣本數換算（民進黨 404、國民黨 247、民眾黨 84、中立 250、未回答 94，共 1,200）',url:'https://www.my-formosa.com.tw/DOC_227893.htm'},
+ {k:'mf2',d:'08/24–08/26',n:1632,moe:2.43,v:[34.6,19.4,9.0],neu:27.8,conf:'依附表一換算（民進黨 565、國民黨 316、民眾黨 147、中立 334、未回答 120，共 1,632）',url:'https://www.my-formosa.com.tw/DOC_228773.htm'},
+ {k:'mf2',d:'09/29–10/02',n:1201,moe:2.83,v:[33.8,18.2,6.7],neu:32.1,conf:'依附表一換算（民進黨 406、國民黨 219、民眾黨 81、中立 265、未回答 120，共 1,201）',url:'https://www.my-formosa.com.tw/DOC_229724.htm'},
+ {k:'mf2',d:'10/27–10/29',n:1204,moe:2.82,v:[40.9,19.4,9.0],neu:22.9,conf:'依附表一換算（民進黨 492、國民黨 234、民眾黨 108、中立 192、未回答 84，共 1,204）；中立 15.9% 與黃暐瀚轉述相符',url:'https://www.my-formosa.com.tw/DOC_230543.htm'},
+ {k:'tvbs',int:1,d:'04/16–04/23',n:1118,moe:2.9,v:[25,23,11],neu:27,conf:'表 7-1 交叉表表頭：中立 27%、其他 14%（含小黨與拒答）。TVBS 今年的全國調查，只有這一份 PDF 印出政黨傾向分布',url:'https://cc.tvbs.com.tw/portal/file/poll_center/2026/20260424/23f521f18910fa760b61510f772d5c83.pdf'},
+ {k:'esc',pool:1,d:'01/01–06/30',n:4807,v:[33.8,21.0,8.8],neu:35.5,conf:'2026 年 1–6 月多次電訪合併統計，是半年平均，不是單一一次調查，所以不畫進走勢圖',url:'https://esc.nccu.edu.tw/PageDoc/Detail?fid=7806&id=6965'}
+];
+const PPARTY=[['民進黨','DPP'],['國民黨','KMT'],['民眾黨','TPP']];
+const psMid=p=>{const [a,b]=p.d.split('–').map(doy);return (a+b)/2};
+const psMon=p=>+p.d.split('–')[1].split('/')[0];
+const psf=(p,v)=>p.int?String(Math.round(v)):v.toFixed(1);
+const PSK=['mf','mf2','tw','zm'];/* 有多期、畫走勢小圖的機構，依最近一期排序 */
+const psLast=k=>PSUP.filter(x=>x.k===k).sort((a,b)=>psMid(b)-psMid(a))[0];
+let pmon='10',pmode='each';
+function psRow(p){
+ const o=PS_ORG[p.k],oth=p.oth?p.oth[0]+p.oth[1]:0,rest=Math.max(0,100-p.v[0]-p.v[1]-p.v[2]-oth);
+ const seg=(v,c,cls,lab)=>`<span class="${cls||''}" style="flex:${v};background:${c}" data-t="${o.n}｜${lab} ${p.int?Math.round(v):v.toFixed(1)}%">${v>=8?(p.int?Math.round(v):v.toFixed(1))+'%':''}</span>`;
+ const bar=`<div class="pbar" role="img" aria-label="${PPARTY.map(([n],i)=>n+' '+p.v[i]+'%').join('，')}">${seg(p.v[0],'var(--dpp)','','民進黨')}${seg(p.v[1],'var(--kmt)','','國民黨')}${seg(p.v[2],'var(--tpp)','lt','民眾黨')}${oth?seg(oth,'var(--oth)','lt','其他政黨（泛綠 '+p.oth[0]+'%、泛藍 '+p.oth[1]+'%）'):''}${seg(rest,'#e6e9ee','lt',p.neu?'中立或未表態 '+p.neu+'%，其餘為其他政黨':'中立、其他或未表態')}</div>`;
+ const lg=`<div class="plg">${PPARTY.map(([n,pt],i)=>`<span><i style="background:${P[pt].c}"></i>${n} <b>${psf(p,p.v[i])}%</b></span>`).join('')}${oth?`<span><i style="background:var(--oth)"></i>其他政黨 <b>${oth.toFixed(1)}%</b></span>`:''}<span><i style="background:#e6e9ee"></i>${p.neu?'中立或未表態 <b>'+p.neu+'%</b>，其餘為其他政黨':'中立、其他或未表態'} <b>${p.neu?'':psf(p,rest)+'%'}</b></span></div>`;
+ return `<div class="prow"><div><div class="who">${o.n}</div><div class="meta">${p.pool?'2026 年 1–6 月合併':'調查 '+p.d}・全國</div>
+  <div style="margin-top:4px"><span class="badge">${o.m}</span>${p.n?`<span class="badge num">n=${p.n}</span>`:''}${p.pool?'<span class="badge">半年合併</span>':''}${p.sec?'<span class="badge warn">數字取自報導，原始報告待核</span>':''}</div>
+  ${p.conf?`<div class="meta" style="margin-top:4px">${p.conf}</div>`:''}<div class="meta"><a href="${p.url}">來源</a></div></div><div>${bar}${lg}</div></div>`;
+}
+function psOverview(){
+ const ms=[2,3,4,5,6,7,8,9,10],ks=['zm','tw','mf'];
+ const cell=p=>{if(!p)return '<td class="pe">—</td>';const oth=p.oth?p.oth[0]+p.oth[1]:0,rest=Math.max(0,100-p.v[0]-p.v[1]-p.v[2]-oth);
+  return `<td><button class="pc" data-pm="${psMon(p)}" title="${PS_ORG[p.k].s} ${p.d}"><span class="mb"><i style="flex:${p.v[0]};background:var(--dpp)"></i><i style="flex:${p.v[1]};background:var(--kmt)"></i><i style="flex:${p.v[2]};background:var(--tpp)"></i>${oth?`<i style="flex:${oth};background:var(--oth)"></i>`:''}<i style="flex:${rest};background:#e6e9ee"></i></span><span class="mv num"><b style="color:var(--dpp-t)">${psf(p,p.v[0])}</b> <b style="color:var(--kmt-t)">${psf(p,p.v[1])}</b> <b style="color:var(--tpp-t)">${psf(p,p.v[2])}</b></span>${p.sec?'<span class="mq">待核</span>':''}</button></td>`};
+ return `<div class="ovw"><table class="ov"><thead><tr><th>機構</th>${ms.map(m=>`<th>${m}月</th>`).join('')}</tr></thead><tbody>${ks.map(k=>`<tr><th><b>${PS_ORG[k].s}</b><span>${PS_ORG[k].q}</span></th>${ms.map(m=>cell(PSUP.find(p=>p.k===k&&psMon(p)===m))).join('')}</tr>`).join('')}</tbody></table></div>
+ <p class="meta">每格三個數字依序是<b style="color:var(--dpp-t)">民進黨</b>、<b style="color:var(--kmt-t)">國民黨</b>、<b style="color:var(--tpp-t)">民眾黨</b>的支持度（%），色條灰色部分為中立、其他或未表態。「—」表示該機構這個月沒有發布全國政黨支持度。點格子可看該月明細。</p>`;
+}
+function psLatest(){
+ const rec=PSK.filter(k=>psMid(psLast(k))>=doy('07-01')).sort((a,b)=>psMid(psLast(b))-psMid(psLast(a)));
+ return `<div class="kpis">${rec.map(k=>{const p=psLast(k);
+  return `<div class="card"><h3>${PS_ORG[k].s}<span class="meta">　最新一期 ${p.d}</span></h3><div class="kv3">${PPARTY.map(([n,pt],i)=>`<div><span class="big num" style="color:${P[pt].t}">${psf(p,p.v[i])}%</span><span>${n}</span></div>`).join('')}</div>${p.sec?'<div class="meta">數字取自報導，原始報告待核</div>':''}</div>`}).join('')}</div>
+ <p class="meta">只列 7 月以後仍有發布的機構。其他來源的最近一筆：${['tvbs','esc'].map(k=>{const p=psLast(k);return `${PS_ORG[k].s} ${p.pool?'1–6 月合併':p.d}（${PPARTY.map(([n],i)=>n+' '+psf(p,p.v[i])+'%').join('、')}）`}).join('；')}，都在下方總表。</p>`;
+}
+function renderPTab(){
+ const rows=[...PSUP].sort((a,b)=>psMid(b)-psMid(a)),PC=['var(--dpp)','var(--kmt)','var(--tpp)'],PT=['var(--dpp-t)','var(--kmt-t)','var(--tpp-t)'];
+ const {chips,table}=ptable('ps',{rows,monOf:psMon,monLab:m=>m+' 月',ncol:6,lab:p=>PS_ORG[p.k].s+p.d,
+  gsum:a=>`${new Set(a.map(p=>p.k)).size} 家發布`,
+  head:`<thead><tr><th>機構</th><th class="hs">調查日期</th><th class="hs nn">樣本</th><th class="vsh2">支持度（%）：<span style="color:var(--dpp-t)">民進黨</span>・<span style="color:var(--kmt-t)">國民黨</span>・<span style="color:var(--tpp-t)">民眾黨</span>・灰色為中立或其他</th><th>領先</th><th class="hs"><span class="sr">展開</span></th></tr></thead>`,
+  cells:p=>{const oth=p.oth?p.oth[0]+p.oth[1]:0,rest=Math.max(0,100-p.v[0]-p.v[1]-p.v[2]-oth),ord=[0,1,2].sort((a,b)=>p.v[b]-p.v[a]),d=p.int?String(p.v[ord[0]]-p.v[ord[1]]):(p.v[ord[0]]-p.v[ord[1]]).toFixed(1);
+   return `<td class="o"><b>${PS_ORG[p.k].s}</b><span class="od">${p.pool?'1–6 月合併':p.d}</span>${p.sec?'<span class="tg sec">待核</span>':''}</td><td class="d hs">${p.pool?'1–6 月合併':p.d}</td><td class="hs nn num">${p.n?p.n.toLocaleString():'—'}</td>
+   <td class="vsc"><div class="mps" role="img" aria-label="${PPARTY.map(([n],i)=>n+' '+psf(p,p.v[i])+'%').join('，')}"><span class="mbar pb">${p.v.map((v,i)=>`<i style="flex:${v};background:${PC[i]}"></i>`).join('')}${oth?`<i style="flex:${oth};background:var(--oth)"></i>`:''}<i class="mr" style="flex:${rest}"></i></span><span class="pn num">${p.v.map((v,i)=>`<b style="color:${PT[i]}"${i===ord[0]?' class="hi"':''}>${psf(p,v)}</b>`).join('')}</span></div></td>
+   <td class="g">${leadChip(PPARTY[ord[0]][0],PC[ord[0]],+d?d:0)}</td>`},
+  detail:p=>psRow(p).replace('<div class="prow">','<div class="prow" style="border:0;padding:0">')});
+ $('#psmon').innerHTML=chips;$('#ptab').innerHTML=table;
+ $('#pnote').innerHTML='依調查日期由新到舊排列。各家問法和選項不同，同一個月的數字可能差幾個百分點；TVBS 只公布整數。美麗島 7 月起的數字由附表一各黨樣本數換算，政大選研是 1–6 月多次電訪的合併數字。點任一列，可看大長條、樣本與出處。震傳媒 9、10 月只做新北、台北單一城市，不列入全國比較。';
+}
+TRENDER.ps=renderPTab;
+function renderPS(){$('#pover').innerHTML=psLatest();renderPTab()}
+const PSNOTE={each:'每家機構一格、各自一條線，不混成平均；四格刻度相同（0–45%），可以直接比較高低。美麗島 7 月起換了問卷設計者與執行公司，前後不能直接接成一條線，所以拆成兩格；原本的戴立安題組，8 月起改由「台灣民心」延續。各家問法和選項不同，同一個月的數字可能差好幾個百分點。TVBS 今年只有一份全國調查公布政黨傾向，政大選研是半年合併數字，兩者只列在下方總表。顏色較淡的線段，表示前後兩期相隔超過兩個半月。滑鼠移到圖上，可看同一期的數字。',avg:'<b>綜合參考線</b>把各家每份民調以調查日期為中心做高斯加權平均（至少 30 天寬，民調較少的時段自動放寬，色帶也跟著變寬），每份權重相同，<b>未校正各家問法與選項的差異</b>，只用來看大方向，不是任何一家的結果。政大選研的半年合併數字不列入。'};
+function renderPSTrend(){document.querySelectorAll('[data-pmode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pmode===pmode)));$('#psnote').innerHTML=PSNOTE[pmode];drawPS(true)}
+document.querySelectorAll('[data-pmode]').forEach(b=>b.addEventListener('click',()=>{pmode=b.dataset.pmode;renderPSTrend()}));
+let psKey='';
+function drawPS(force){
+ const box=$('#psfig');if(!box)return;const W=box.clientWidth;if(!W)return;const key=W+pmode;if(!force&&key===psKey)return;psKey=key;
+ const t0=doy('01-25'),t1=doy('11-05'),C=[['var(--dpp)','var(--dpp-t)'],['var(--kmt)','var(--kmt-t)'],['var(--tpp)','var(--tpp-t)']];
+ const tip=hits=>{const p=hits[0].q.p;return `<b>${PS_ORG[p.k].s}</b>・調查 ${p.d}<br>${PPARTY.map(([n],i)=>n+' '+psf(p,p.v[i])+'%').join('・')}${p.sec?'<br>數字取自報導，原始報告待核':''}`};
+ if(pmode==='each'){
+  const ks=PSK;
+  box.innerHTML=`<div class="sm3 sm4">${ks.map(k=>`<div class="smp"><div class="smh"><b>${PS_ORG[k].s}</b><span>${PSUP.filter(p=>p.k===k).length} 期</span></div><div class="fig sm"><svg data-k="${k}" aria-label="${PS_ORG[k].s}三黨支持度走勢"></svg></div></div>`).join('')}</div>`;
+  box.querySelectorAll('svg').forEach(svg=>{const q=PSUP.filter(p=>p.k===svg.dataset.k).sort((a,b)=>psMid(a)-psMid(b));
+   panel(svg,{t0,t1,y0:0,y1:45,step:10,endR:40,tip,series:[0,1,2].map(i=>({name:PPARTY[i][0],c:C[i][0],t:C[i][1],pts:q.map(p=>({t:psMid(p),v:p.v[i],p}))}))})});
+ }else{
+  box.innerHTML=`<div class="fig one"><svg aria-label="三黨支持度綜合參考線"></svg></div>`;
+  const svg=box.querySelector('svg'),PQ=PSUP.filter(p=>!p.pool),ms=PQ.map(psMid),a0=Math.min(...ms),a1=Math.max(...ms);
+  panel(svg,{t0,t1,y0:0,y1:45,step:10,dotsOnly:1,endR:96,tip:hits=>hits.map(h=>`<b>${PS_ORG[h.q.p.k].s}</b> ${h.s.name} ${psf(h.q.p,h.q.v)}%`).join('<br>'),
+   series:[0,1,2].map(i=>({name:PPARTY[i][0],c:C[i][0],t:C[i][1],pts:PQ.map(p=>({t:psMid(p),v:p.v[i],p})).sort((a,b)=>a.t-b.t)})),
+   avg:[0,1,2].map(i=>({name:PPARTY[i][0],c:C[i][0],t:C[i][1],line:avgLine(PQ.map(p=>[psMid(p),p.v[i]]),30,a0,a1)}))});
+ }
+}
+const psRO=new ResizeObserver(()=>drawPS());psRO.observe($('#psfig'));
+renderPS();renderPSTrend();
+
+/* ---------- 全部收錄民調 ---------- */
+const PISTEP=()=>innerWidth<640?10:25;let pilim=PISTEP();
+function allPolls(){
+ const out=[],eOpen=!inBlackout()||preview,f1=(p,v)=>p.int?v:v.toFixed(1);
+ APP.forEach(p=>out.push({t:'施政滿意度',sc:'全國',who:ORG[p.k],d:(p.est?'約 ':'')+fmtD(p.d)+(p.est?'（推估）':'')+' 結束',sort:doy(p.d),res:[p.sat?`滿意 ${f1(p,p.sat[0])}%・不滿意 ${f1(p,p.sat[1])}%`:'',p.trust?`信任 ${f1(p,p.trust[0])}%・不信任 ${f1(p,p.trust[1])}%`:''].filter(Boolean).join('<br>'),fl:p.est?['日期推估']:[],url:'#approval',lt:'施政頁'}));
+ PSUP.forEach(p=>out.push({t:'政黨支持度',sc:'全國',who:PS_ORG[p.k].n,d:p.d,sort:doy(p.d.split('–')[1]),res:PPARTY.map(([n],i)=>`${n} ${psf(p,p.v[i])}%`).join('・'),fl:p.sec?['待核']:p.pool?['半年合併']:[],url:p.url}));
+ if(eOpen)RACES.forEach(r=>r.polls.forEach(p=>{const f=v=>p.int?v:v.toFixed(p.dec||1);out.push({t:'選舉',sc:r.name+'長',who:p.who,d:p.d||p.pub||'未載明',sort:p.d?doy(p.d.split('–')[1]):-1,res:`${r.c[0][0]} ${f(p.v[0])}%・${r.c[1][0]} ${f(p.v[1])}%`,fl:[p.sec?'待核':'',p.pc?'陣營委託':'',p.m==='網路問卷'?'網路問卷':'',p.d?'':'日期未載明'].filter(Boolean),url:p.url})}));
+ return out.sort((a,b)=>b.sort-a.sort);
+}
+function renderPI(){
+ const t=$('#pit').value,q=$('#piq').value.trim().toLowerCase(),fs=[...document.querySelectorAll('[data-pf]:checked')].map(x=>x.dataset.pf);
+ const all=allPolls(),eOpen=!inBlackout()||preview;
+ const rows=all.filter(r=>(!t||r.t===t)&&(!q||(r.who+' '+r.sc).toLowerCase().includes(q))&&(!fs.length||fs.some(f=>r.fl.includes(f))));
+ $('#pires').innerHTML=`符合條件 <b>${rows.length}</b> 份（共 ${all.length} 份）。勾選多個「只看」時，符合任一項就列出。`+(eOpen?'':'<br><b>選舉民調封關中</b>，選舉民調暫不列入此表，11/28 16:00 後恢復。');
+ if(!rows.length){$('#pibox').innerHTML=`<div class="empty">${t==='選舉'&&!eOpen?'選舉民調封關中，暫不列出。':'沒有符合條件的民調。可以取消勾選，或清掉搜尋字。'}</div>`;return}
+ const cut=rows.slice(0,pilim);
+ $('#pibox').innerHTML=`<div class="ovw"><table class="dt stack pi"><thead><tr><th>主題</th><th>範圍</th><th>機構</th><th>調查日期</th><th>結果</th><th>標示</th><th>來源</th></tr></thead><tbody>${cut.map(r=>`<tr><td data-l="主題">${r.t}</td><td data-l="範圍">${r.sc}</td><td class="w" data-l="機構">${r.who}</td><td data-l="調查日期">${r.d}</td><td class="w num" data-l="結果">${r.res}</td><td class="w" data-l="標示">${r.fl.map(f=>`<span class="badge${f==='待核'||f==='日期推估'?' warn':f==='陣營委託'||f==='日期未載明'?' alert':''}">${f}</span>`).join('')||'—'}</td><td data-l="來源"><a href="${r.url}">${r.lt||'連結'}</a></td></tr>`).join('')}</tbody></table></div>`+(cut.length<rows.length?`<button class="more" id="pimore">再顯示 ${Math.min(PISTEP(),rows.length-cut.length)} 份（還有 ${rows.length-cut.length} 份）</button>`:'');
+ $('#pimore')?.addEventListener('click',()=>{pilim+=PISTEP();renderPI()});
+}
+$('#pit').addEventListener('change',()=>{pilim=PISTEP();renderPI()});$('#piq').addEventListener('input',()=>{pilim=PISTEP();renderPI()});
+document.querySelectorAll('[data-pf]').forEach(c=>c.addEventListener('change',()=>{pilim=PISTEP();renderPI()}));
+renderPI();
+
+
+/* ---------- 信任帶、流程線、來源名稱帶 ---------- */
+const TI={ok:'<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#e3f6ec"/><path d="M4.8 8.2l2.2 2.2 4.2-4.6" fill="none" stroke="#0f7a42" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ doc:'<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="2" fill="none" stroke="#4c5561" stroke-width="1.5"/><path d="M5.5 5.5h5M5.5 8.5h5M5.5 11.5h3" stroke="#4c5561" stroke-width="1.5" stroke-linecap="round"/></svg>',
+ org:'<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="5" cy="6" r="2.3" fill="none" stroke="#4c5561" stroke-width="1.5"/><circle cx="11" cy="6" r="2.3" fill="none" stroke="#4c5561" stroke-width="1.5"/><path d="M1.5 13c.6-2.2 2-3.3 3.5-3.3s2.9 1.1 3.5 3.3M7.5 13c.6-2.2 2-3.3 3.5-3.3s2.9 1.1 3.5 3.3" fill="none" stroke="#4c5561" stroke-width="1.5" stroke-linecap="round"/></svg>',
+ warn:'<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#fff4d6"/><path d="M8 4.5v4.2" stroke="#8a5a00" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="11.3" r="1" fill="#8a5a00"/></svg>',
+ clk:'<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.3" fill="none" stroke="#4c5561" stroke-width="1.5"/><path d="M8 4.6V8l2.4 1.6" fill="none" stroke="#4c5561" stroke-width="1.5" stroke-linecap="round"/></svg>'};
+const UPD='11/20';
+const trustHTML=items=>items.filter(Boolean).map(([ic,t,c])=>`<span${c?` class="${c}"`:''}>${TI[ic]}${t}</span>`).join('');
+function renderTrust(){
+ const aw=APP.filter(p=>p.est||!p.url).length;
+ $('#tr-app').innerHTML=trustHTML([['doc',`收錄 <b>${APP.length}</b> 份`],['org',`<b>${new Set(APP.map(p=>p.k)).size}</b> 家機構`],['ok',`<b>${APP.length-aw}</b> 份對回原始出處`],aw?['warn',`<b>${aw}</b> 份日期推估`,'w']:null,['clk',`整理至 <b class="num">${UPD}</b>`]]);
+ const pw=PSUP.filter(p=>p.sec).length;
+ $('#tr-ps').innerHTML=trustHTML([['doc',`收錄 <b>${PSUP.length}</b> 份`],['org',`<b>${new Set(PSUP.map(p=>p.k.replace(/2$/,''))).size}</b> 家機構`],['ok',`<b>${PSUP.length-pw}</b> 份對回原始報告`],pw?['warn',`<b>${pw}</b> 份待核`,'w']:null,['clk',`整理至 <b class="num">${UPD}</b>`]]);
+ const EP=RACES.flatMap(r=>r.polls),ew=EP.filter(p=>p.pc).length,en=EP.filter(p=>/網路/.test(p.m||'')).length;
+ $('#tr-el').innerHTML=trustHTML([['doc',`六都共 <b>${EP.length}</b> 份`],['org',`<b>${new Set(EP.map(p=>p.who.replace(/（.*$/,''))).size}</b> 個發布單位`],['warn',`陣營委託 <b>${ew}</b> 份另標`,'w'],['doc',`網路問卷 <b>${en}</b> 份另標`]]);
+ const so=SOURCES.filter(x=>x.ok).length;
+ $('#tr-src').innerHTML=trustHTML([['org',`<b>${SOURCES.length}</b> 個來源`],['ok',`<b>${so}</b> 個運作中`],SOURCES.length-so?['warn',`<b>${SOURCES.length-so}</b> 個已停止`,'w']:null,['doc',`<b>${new Set(SOURCES.map(x=>x.k)).size}</b> 種類型`]]);
+ $('#srcstrip').innerHTML=`<b>持續追蹤</b><div>${SOURCES.filter(x=>x.ok&&x.k!=='政黨委託').map(x=>`<span>${x.n.replace(/[（(].*$/,'').replace(/ 國政民調$/,'')}</span>`).join('')}</div>`;
+}
+const FLOW=[['發現','每天看各機構官網的民調列表、新聞與彙整報導，列出新出現的民調。','彙整文章只當線索'],
+ ['追回原始出處','回到機構官網的報告 PDF 或首發報導；網頁讀不到就用瀏覽器開、圖片表格就放大讀。','例：美麗島附表一'],
+ ['逐欄核對','調查日期、樣本、誤差、委託／設計／執行、未表態比例，一欄一欄對原文。','查不到才標「待核」'],
+ ['補齊與去重','同一份被多家轉載的合併成一筆；報導提到「上次調查」就回頭補，確認沒有漏掉。','真的沒做才算「查無」'],
+ ['呈現','各家分開畫、不混成平均；陣營委託與網路問卷另外標示，選舉民調封關期自動鎖定。','每筆附來源連結']];
+const flowHTML=()=>FLOW.map(([t,d,x],i)=>`<li style="--i:${i}"><span class="fn" style="transition-delay:${i*.15}s">${i+1}</span><b>${t}</b><p>${d}</p><span class="fx">${x}</span></li>`).join('');
+$('#flow-home').innerHTML=flowHTML();$('#flow-about').innerHTML=flowHTML();
+document.querySelectorAll('.flow li').forEach((li,i)=>li.style.setProperty('--d',(i%5)*.15+'s'));
+renderTrust();
+/* ---------- 首頁 ---------- */
+function renderHome(){
+ const nE=RACES.reduce((a,r)=>a+r.polls.length,0),nAll=APP.length+PSUP.length+nE;
+ $('#hstats').innerHTML=[[SOURCES.filter(x=>x.ok).length,'個持續追蹤的民調來源'],[nAll,'份收錄的公開民調'],[3,'個主題：施政、政黨、選舉'],['11/20','資料最後整理日']].map(([b,t])=>`<div><b class="num">${b}</b><span>${t}</span></div>`).join('');
+ const SH={mf:'美麗島',mf2:'美麗島',tw:'台灣民心',zm:'震傳媒'},mon=L=>(/(\d+) ?月/.exec(L.who)||[])[1];
+ const appR=LATEST.map(L=>{const v=L.sat,r=Math.max(0,100-v[0]-v[1]);return `<div class="dr"><span class="dn">${SH[L.k]} ${mon(L)}月</span><span class="mb"><i style="flex:${v[0]};background:var(--pos)"></i><i style="flex:${r};background:#e6e9ee"></i><i style="flex:${v[1]};background:var(--neg)"></i></span><span class="dv num"><b style="color:#6b3fc0">${v[0].toFixed(1)}</b>　<b style="color:#c23b33">${v[1].toFixed(1)}</b></span></div>`}).join('');
+ const allPos=LATEST.every(L=>L.sat[0]>L.sat[1]);
+ const pl=['mf2','tw','zm'].map(psLast);
+ const psR=pl.map(p=>{const r=Math.max(0,100-p.v[0]-p.v[1]-p.v[2]);return `<div class="dr"><span class="dn">${SH[p.k]} ${psMon(p)}月</span><span class="mb"><i style="flex:${p.v[0]};background:var(--dpp)"></i><i style="flex:${p.v[1]};background:var(--kmt)"></i><i style="flex:${p.v[2]};background:var(--tpp)"></i><i style="flex:${r};background:#e6e9ee"></i></span><span class="dv num"><b style="color:var(--dpp-t)">${p.v[0].toFixed(1)}</b> <b style="color:var(--kmt-t)">${p.v[1].toFixed(1)}</b> <b style="color:var(--tpp-t)">${p.v[2].toFixed(1)}</b></span></div>`}).join('');
+ const dppTop=pl.every(p=>p.v[0]>p.v[1]&&p.v[0]>p.v[2]),eOpen=!inBlackout()||preview;
+ $('#doors').innerHTML=`<a class="door" href="#approval"><span class="dk">施政滿意度</span><h3>${allPos?'三家最新一期，對賴清德執政滿意的都多於不滿意':'三家最新一期的賴清德執政滿意度'}</h3>${appR}<span class="meta">左紫為滿意、右紅為不滿意（%）</span><span class="go">看各家走勢</span></a>
+ <a class="door" href="#party"><span class="dk">政黨支持度</span><h3>${dppTop?'三家最新一期，民進黨支持度都排第一':'三家最新一期的政黨支持度'}</h3>${psR}<span class="meta">依序為民進黨、國民黨、民眾黨（%）</span><span class="go">看逐月變化</span></a>
+ <a class="door" href="#election"><span class="dk">選舉民調</span><h3>六都市長選情，依縣市、月份對照</h3>${eOpen?`<div class="rchips">${RACES.map(r=>`<span>${r.name} ${r.polls.length} 份</span>`).join('')}</div>`:`<p class="dlock"><b>封關中</b>：依法 11/18 起至 11/28 16:00 投票截止前，不得發布選舉民調，投票結束後恢復顯示。</p>`}<span class="go">${eOpen?'看各縣市':'看封關說明'}</span></a>`;
+}
+renderHome();
+
+/* ---------- 路由 ---------- */
+const VIEWS=['home','approval','party','election','sources','about'];
+let curView=null;
+function route(){
+ const raw=location.hash.slice(1),h=raw==='disclosure'?'about':raw==='issues'?'home':raw;
+ const v=VIEWS.includes(h)?h:'home';
+ if(curView&&curView!==v)scrollTo(0,0);curView=v;
+ document.querySelectorAll('section[data-view]').forEach(s=>s.classList.toggle('on',s.dataset.view===v));
+ document.querySelectorAll('#nav a').forEach(a=>{if(a.getAttribute('href')==='#'+v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+ if(v==='approval')drawTrend(true);
+ if(v==='party')drawPS(true);
+}
+addEventListener('hashchange',route);
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window){
+ document.documentElement.classList.add('js-anim');
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px',threshold:.05});
+ document.querySelectorAll('.band').forEach(b=>io.observe(b));
+}
+const HDR=document.querySelector('header');
+const setNavh=()=>{document.documentElement.style.setProperty('--navh',HDR.offsetHeight+'px');document.documentElement.style.setProperty('--stick',HDR.classList.contains('hid')?'0px':HDR.offsetHeight+'px')};setNavh();addEventListener('resize',setNavh);
+{let lastY=scrollY,acc=0;addEventListener('scroll',()=>{const y=scrollY,dy=y-lastY;lastY=y;acc=(Math.sign(dy)===Math.sign(acc))?acc+dy:dy;
+ const hide=y>140&&acc>24,show=y<=140||acc<-24;
+ if(hide&&!HDR.classList.contains('hid')){HDR.classList.add('hid');setNavh()}else if(show&&HDR.classList.contains('hid')){HDR.classList.remove('hid');setNavh()}},{passive:true});
+ HDR.addEventListener('focusin',()=>{HDR.classList.remove('hid');setNavh()})}
+const nt=$('#notice');
+if(inBlackout()){nt.hidden=false;nt.firstElementChild.innerHTML='<b>選舉民調封關中</b>（11/18 00:00 至 11/28 16:00）：選舉區塊自動隱藏，施政滿意度與政黨支持度照常顯示。'}
+renderLock();renderRace();route();setNavh();
+}
+</script>
+</body>
+</html>
